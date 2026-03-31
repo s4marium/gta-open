@@ -95,7 +95,14 @@
     },
     "password": "",
     "pawn": {
-        "legacy_plugins": [],
+        "legacy_plugins": [
+            "crashdetect",
+            "mysql",
+            "sscanf",
+            "streamer",
+            "pawn-memory",
+            "samp_bcrypt"
+        ],
         "main_scripts": [
             "main 1"
         ],
@@ -104,7 +111,7 @@
     "rcon": {
         "allow_teleport": false,
         "enable": false,
-        "password": "changeme1"
+        "password": "12hjsadg128dashjkzg87mnd189"
     },
     "sleep": 5.0,
     "use_dyn_ticks": true,
