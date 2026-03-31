@@ -39,3 +39,30 @@ ACMD:[5]skick(playerid, params[])
     Kick(target);
     return 1;
 }
+
+ACMD:[5]mypos(playerid, params[]) {
+
+    new angleString[128], Float:a;
+    GetPlayerFacingAngle(playerid, a);
+    format(angleString, sizeof(angleString), "Your angle is: %0.2f", a);
+    SendMsgF(playerid, COLOR_MODERATION, angleString);
+
+    new posString[128], Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+    format(posString, sizeof(posString), "Your position is: %f, %f, %f", x, y, z);
+    SendMsgF(playerid, COLOR_MODERATION, posString);
+    return 1;
+}
+
+ACMD:[5]gotoco(playerid, params[])
+{
+	new Float: pos[3], int, vw;
+	if(sscanf(params, "p<,>fffD(0)D(0)", pos[0], pos[1], pos[2], int, vw)) return SendSyntaxMsg(playerid, "USAGE: /gotoco [x coordinate] [y coordinate] [z coordinate] [interior] [vw]");
+
+	SendMsgF(playerid, COLOR_MODERATION, "You have been teleported to the coordinates specified.");
+
+	SetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+	SetPlayerInterior(playerid, int);
+	SetPlayerVirtualWorld(playerid, vw);
+	return 1;
+}

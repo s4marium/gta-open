@@ -5,31 +5,27 @@
 	"output": "gamemodes/main.amx",
 	"dependencies": [
 		"pawn-lang/samp-stdlib@open.mp",
-    	"pawn-lang/pawn-stdlib@open.mp",
-		"maddinat0r/sscanf:v2.8.3",
+		"pawn-lang/pawn-stdlib@open.mp",
+		"Y-Less/sscanf:v2.8.3",
 		"pawn-lang/YSI-Includes@5.x",
-		"AmyrAhmady/samp-plugin-crashdetect",
-		"Zeex/amx_assembly",
+		"AmyrAhmady/samp-plugin-crashdetect:v4.22",
+		"Zeex/amx_assembly:v1.0",
 		"Y-Less/code-parse.inc",
 		"Y-Less/indirection",
 		"pBlueG/SA-MP-MySQL:R41-4",
-		"Southclaws/samp-logger",
+		"Southclaws/samp-logger:1.5.0",
 		"PatrickGTR/MySQL-Prepared-Statements",
 		"samp-incognito/samp-streamer-plugin:v2.9.4",
 		"kristoisberg/samp-map-zones",
-		"Southclaws/samp-ini",
+		"Southclaws/samp-ini:1.1.0",
 		"Sreyas-Sreelal/samp-bcrypt:0.2.3"
 	],
 	"local": true,
 	"runtime": {
 		"version": "0.3.7",
-		"mode": "server",
 		"echo": "-",
 		"rcon_password": "password",
 		"port": 7777,
-		"hostname": "SA-MP Server",
-		"maxplayers": 50,
-		"language": "",
 		"mapname": "San Andreas",
 		"weburl": "www.sa-mp.com",
 		"gamemodetext": "Unknown",
@@ -96,7 +92,8 @@
 				"gamemodes/core/houses/furniture",
 				"gamemodes/core/mapping",
 				"gamemodes/core/gangs"
-			]
+			],
+			"compiler": {}
 		}
 	]
 }
