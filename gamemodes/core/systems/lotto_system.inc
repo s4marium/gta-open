@@ -1,9 +1,9 @@
-#define LOTTO_MAX_JACKPOT 		(25000) //+25, 000
-#define LOTTO_MIN_JACKPOT		(10000) //+10, 100
-#define LOTTO_START     		(50000) //50, 00 starting lotto price
+#define LOTTO_MAX_JACKPOT 		(15000) //+15, 000
+#define LOTTO_MIN_JACKPOT		(5000) //+5, 000
+#define LOTTO_START     		(25000) //25, 000 starting lotto price
 #define MAX_LOTTO_INPUT			(MAX_PLAYERS)
 
-#define TICKET_PRICE      		(1000)
+#define TICKET_PRICE      		(500)
 
 new
 	LottoJackpot = LOTTO_START,
@@ -33,13 +33,13 @@ hook OnPlayerConnect(playerid) {
 hook OnServerSecondUpdate() {
 
     // only show the message every 2 minutes
-    if(gettime() - lottoLastTick < (60 * 2)) {
+    if(gettime() - lottoLastTick < (72)) {
         // go to next hook.
         return 1;
     }
 
     // draw every 10 minutes.
-    if(lottoDrawCounter == 5) {
+    if(lottoDrawCounter == 5) { // draws every ~6 minutes (5 * 72s)
         new
             genRandomNum = 10,//random(MAX_LOTTO_INPUT - 1) + 1,
             winnerID = INVALID_PLAYER_ID;

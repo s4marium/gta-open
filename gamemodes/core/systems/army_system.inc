@@ -43,7 +43,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 Float:health;
             GetPlayerHealth(playerid, health);
 
-            if(GetPlayerMoney(playerid) < 500) {
+            if(GetPlayerMoney(playerid) < 250) {
                 return SendErrorMsg(playerid, "Not enough money!");
             }
 
@@ -51,7 +51,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 return SendErrorMsg(playerid, "You have full health!");
             }
 
-            GivePlayerMoney(playerid, -500);
+            GivePlayerMoney(playerid, -250);
             SetPlayerHealth(playerid, 100);
         }
     }

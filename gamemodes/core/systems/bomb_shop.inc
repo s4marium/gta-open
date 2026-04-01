@@ -7,7 +7,7 @@ const
     Float:gBombShopA = 264.0457;
 
 const
-    C4_PRICE = 5_000;
+    C4_PRICE = 3_000;
 
 static
     gBombDealerAreaID;

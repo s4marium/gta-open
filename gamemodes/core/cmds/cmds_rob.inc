@@ -21,7 +21,7 @@ CMD:rob(playerid, params[])
         return SendErrorMsg(playerid, "The player your trying to rob is not on foot");
     }
 
-    if (gettime() - PlayerRobTick[playerid] < 30) {
+    if (gettime() - PlayerRobTick[playerid] < 45) {
         return SendErrorMsg(playerid, "You just robbed someone recently, please try again later");
     }
 
@@ -47,8 +47,8 @@ CMD:rob(playerid, params[])
     }
 
     new
-        // 5% of player's money + $500 on top.
-        robbedcash = random((GetPlayerMoney(targetid) / 100) * 5 ) + 500;
+        // 3% of player's money + $300 on top.
+        robbedcash = random((GetPlayerMoney(targetid) / 100) * 3 ) + 300;
 
     CallLocalFunction("OnPlayerRobPlayer", "iii", playerid, targetid, robbedcash);
 

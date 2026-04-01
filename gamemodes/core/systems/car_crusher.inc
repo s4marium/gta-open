@@ -2,7 +2,7 @@
 
 static
     Float:MOVE_SPEED = 0.05,
-    WAIT_DURATION = 2; // minutes
+    WAIT_DURATION = 1; // minutes
 
 static
 	ContainerDoors[2],
@@ -119,7 +119,7 @@ hook OnPlayerEnterDynamicCP(playerid, checkpointid) {
 		CrusherCooldown[playerid] = gettime();
 
         new
-            reward = random(7500) + 500;
+            reward = random(5000) + 3000;
 
 	    GameTextForPlayer(playerid, "~n~~n~~g~~h~~h~Pleasure doing business!", 4000, 3);
 

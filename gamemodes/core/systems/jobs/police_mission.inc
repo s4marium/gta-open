@@ -83,8 +83,8 @@ mission_begin(playerid)
         return -1;
     }
     if(PlayerCallsDone[playerid] == 3) {
-        GivePlayerMoney(playerid, 25000);
-        SendServerMsgF(playerid, "Completed a Police Mission Recieved 25k");
+        GivePlayerMoney(playerid, 30000);
+        SendServerMsgF(playerid, "Completed a Police Mission Recieved 30k");
         Player_GiveScore(playerid, 1, true);
         mission_cancel(playerid);
         return -2;
@@ -128,7 +128,7 @@ hook OnPlayerEnterRaceCP(playerid)
     if(PlayerMissionState[playerid])
     {
         if(PlayerCallsDone[playerid] < 3) {
-            GivePlayerMoney(playerid, 5000);
+            GivePlayerMoney(playerid, 7500);
             Player_GiveScore(playerid, 1, true);
             PlayerCallsDone[playerid]++;
             mission_begin(playerid);

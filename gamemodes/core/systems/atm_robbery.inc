@@ -6,7 +6,7 @@ static
     ATM_RobbedRecently[MAX_ATMS],
     ATM_MoneyPickup[MAX_ATMS][MAX_MONEY_PICKUP];
 
-#define ATM_COOLDOWN_MINUTES 5
+#define ATM_COOLDOWN_MINUTES 3
 
 #define ATM_COOLDOWN (1000 * 60) * ATM_COOLDOWN_MINUTES
 
@@ -109,7 +109,7 @@ hook OnPlayerPickUpDynPickup(playerid, pickupid) {
 
     if(ATM_MoneyPickup[idx][id]== pickupid) {
         new
-            reward = random(400) + 500;
+            reward = random(600) + 800;
 
         SendMsgF(
             playerid,

@@ -185,7 +185,7 @@ Crack_Produce(playerid, seq = SEQ_ADDCOCALEAVES) {
 			ClearAnimations(playerid, SYNC_ALL);
 			Crack_ResetData(playerid);
 
-			plyJustCreatedCocaine[playerid] = gettime() + 60;
+			plyJustCreatedCocaine[playerid] = gettime() + 30;
 			Bit_Set(HasBeganCocaineProduction, playerid, false);
 		}
 	}

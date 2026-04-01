@@ -7,12 +7,12 @@
 
 #include <YSI_Coding\y_hooks>
 
-#define WIN_MULTIPLIER_GLOBAL 	(1.0)
+#define WIN_MULTIPLIER_GLOBAL 	(1.5)
 
 #define MIN_BET 				(5)
-#define MAX_BET 				(200)
+#define MAX_BET 				(500)
 
-#define BET_SETP 				(5)
+#define BET_SETP 				(25)
 
 #define G_STATE_NOT_GAMBLING    (0)
 #define G_STATE_READY           (1)
