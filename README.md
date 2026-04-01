@@ -27,7 +27,7 @@ Before getting started, make sure you have the following installed:
 
 - [**sampctl**](https://github.com/Southclaws/sampctl) — Package manager for SA-MP/open.mp
 - [**MySQL Server**](https://dev.mysql.com/downloads/) — Database server (MySQL 5.7+ or MariaDB)
-- [**open.mp Server**](https://github.com/openmultiplayer/open.mp/releases) — The `omp-server.exe` binary (already included in this repo)
+- [**open.mp Server**](https://github.com/openmultiplayer/open.mp/releases) — `omp-server.exe` (Windows) or `omp-server` (Linux)
 
 ---
 
@@ -38,15 +38,27 @@ Before getting started, make sure you have the following installed:
 ### Replacing the compiler
 
 1. Download compiler **3.10.11** from the [open.mp releases page](https://github.com/openmultiplayer/open.mp/releases)
-2. Navigate to the `sampctl` compiler folder in your AppData:
+2. Navigate to the `sampctl` compiler folder:
 
+   **Windows:**
    ```
    %LOCALAPPDATA%\sampctl\pawn\
    ```
 
+   **Linux:**
+   ```bash
+   ~/.sampctl/pawn/
+   ```
+
 3. **Replace** all existing compiler files with the 3.10.11 version
-4. Right-click the `pawn` folder → **Properties** → check **Read-only** → **Apply**
-   > This prevents `sampctl` from re-downloading compiler 3.10.10 every time you compile.
+4. Prevent `sampctl` from re-downloading compiler 3.10.10:
+
+   **Windows:** Right-click the `pawn` folder → **Properties** → check **Read-only** → **Apply**
+
+   **Linux:**
+   ```bash
+   chmod -R a-w ~/.sampctl/pawn/
+   ```
 
 ### Compiling
 
@@ -109,9 +121,15 @@ The gamemode can automatically create all required database tables:
 
 Once the gamemode is compiled and the database is set up:
 
+**Windows:**
 ```bash
-# Start the open.mp server
 omp-server.exe
+```
+
+**Linux:**
+```bash
+chmod +x omp-server  # first time only
+./omp-server
 ```
 
 The server will start on **port 7777** (default). You can connect using the SA-MP or open.mp client to `localhost:7777`.
