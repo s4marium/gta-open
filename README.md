@@ -23,62 +23,105 @@
 
 ## Prerequisites
 
-Before getting started, make sure you have the following installed:
-
 - [**sampctl**](https://github.com/Southclaws/sampctl) — Package manager for SA-MP/open.mp
-- [**MySQL Server**](https://dev.mysql.com/downloads/) — Database server (MySQL 5.7+ or MariaDB)
+- [**MySQL Server**](https://dev.mysql.com/downloads/) — MySQL 5.7+ or MariaDB
 - [**open.mp Server**](https://github.com/openmultiplayer/open.mp/releases) — `omp-server.exe` (Windows) or `omp-server` (Linux)
+
+The server requires the following plugins (already configured in `config.json`):
+
+| Plugin | Purpose |
+|--------|---------|
+| `crashdetect` | Runtime crash diagnostics |
+| `mysql` | MySQL database driver |
+| `sscanf` | String parsing |
+| `streamer` | Object/checkpoint streaming |
+| `pawn-memory` | Extended memory access |
+| `samp_bcrypt` | Password hashing |
 
 ---
 
 ## Step 1 — Compile the Gamemode
 
-> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**. By default, `sampctl` ships with version 3.10.10, which is **not compatible**.
+> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**. By default, `sampctl` ships with 3.10.10, which is **not compatible**.
 
-### Replacing the compiler
+### 1a. Replace the compiler
 
-1. Download compiler **3.10.11** from the [open.mp releases page](https://github.com/openmultiplayer/open.mp/releases)
-2. Navigate to the `sampctl` compiler folder:
+Download compiler **3.10.11** from the [open.mp releases page](https://github.com/openmultiplayer/open.mp/releases), then replace the compiler files in your `sampctl` cache:
 
-   **Windows:**
-   ```
-   %LOCALAPPDATA%\sampctl\pawn\
-   ```
+**Windows:**
+```
+%LOCALAPPDATA%\sampctl\pawn\
+```
 
-   **Linux:**
-   ```bash
-   ~/.sampctl/pawn/
-   ```
+**Linux:**
+```bash
+~/.sampctl/pawn/
+```
 
-3. **Replace** all existing compiler files with the 3.10.11 version
-4. Prevent `sampctl` from re-downloading compiler 3.10.10:
+After replacing, make the folder read-only so `sampctl` does not overwrite it:
 
-   **Windows:** Right-click the `pawn` folder → **Properties** → check **Read-only** → **Apply**
+**Windows:** Right-click the `pawn` folder > **Properties** > check **Read-only** > **Apply**
 
-   **Linux:**
-   ```bash
-   chmod -R a-w ~/.sampctl/pawn/
-   ```
+**Linux:**
+```bash
+chmod -R a-w ~/.sampctl/pawn/
+```
 
-### Compiling
+### 1b. Install dependencies and build
 
 ```bash
-# 1. Download all required libraries and dependencies
 sampctl ensure
-
-# 2. Build the gamemode
 sampctl build
 ```
 
-If successful, the compiled `main.amx` file will appear in the `gamemodes/` folder.
+If successful, the compiled `gamemodes/main.amx` will be created.
 
 ---
 
-## Step 2 — Set Up the MySQL Database
+## Step 2 — Set Up MySQL
 
-### 2a. Create the database configuration file
+### 2a. Create the database
 
-Create a file named **`mysql.ini`** in the **root directory** of the project with the following contents:
+```sql
+CREATE DATABASE gtaopen;
+```
+
+### 2b. Import the table schemas
+
+The SQL table definitions are located in the `scriptfiles/` directory. Import them **in order** (the `players` table must be created first since other tables reference it):
+
+```bash
+mysql -u root -p gtaopen < scriptfiles/players.sql
+mysql -u root -p gtaopen < scriptfiles/player_stats.sql
+mysql -u root -p gtaopen < scriptfiles/player_bank.sql
+mysql -u root -p gtaopen < scriptfiles/player_items.sql
+mysql -u root -p gtaopen < scriptfiles/player_shots.sql
+mysql -u root -p gtaopen < scriptfiles/weapons.sql
+mysql -u root -p gtaopen < scriptfiles/vips.sql
+mysql -u root -p gtaopen < scriptfiles/jail.sql
+mysql -u root -p gtaopen < scriptfiles/armys.sql
+mysql -u root -p gtaopen < scriptfiles/admins.sql
+mysql -u root -p gtaopen < scriptfiles/bans.sql
+mysql -u root -p gtaopen < scriptfiles/houses.sql
+mysql -u root -p gtaopen < scriptfiles/gangs.sql
+mysql -u root -p gtaopen < scriptfiles/atms.sql
+```
+
+Alternatively, the gamemode can create all tables automatically. In `gamemodes/core/constants.inc`, set:
+
+```pawn
+#define SETUP_TABLE     (true)
+```
+
+Run the server once. After all tables are created, change it back to `false` and recompile:
+
+```pawn
+#define SETUP_TABLE     (false)
+```
+
+### 2c. Create the MySQL connection file
+
+Create a file named **`mysql.ini`** in the **project root directory** (next to `config.json`):
 
 ```ini
 hostname=localhost
@@ -87,39 +130,11 @@ pass=yourpassword
 database=gtaopen
 ```
 
-> **Tip:** If your MySQL server does not require a password, **remove the `pass=` line** entirely.
-
-### 2b. Create the database
-
-Open your MySQL client (or phpMyAdmin) and create a new database:
-
-```sql
-CREATE DATABASE gtaopen;
-```
-
-### 2c. Auto-generate tables
-
-The gamemode can automatically create all required database tables:
-
-1. Open `gamemodes/core/constants.inc`
-2. Find the following line:
-
-   ```pawn
-   #define SETUP_TABLE    (true)
-   ```
-
-3. Make sure the value is set to `true` for the **first time** you run the server
-4. **After the server has started and the tables have been created**, change it back to `false`:
-
-   ```pawn
-   #define SETUP_TABLE    (false)
-   ```
+> **Note:** If your MySQL server has no password, remove the `pass=` line entirely. This file is already in `.gitignore`.
 
 ---
 
 ## Step 3 — Run the Server
-
-Once the gamemode is compiled and the database is set up:
 
 **Windows:**
 ```bash
@@ -132,7 +147,7 @@ chmod +x omp-server  # first time only
 ./omp-server
 ```
 
-The server will start on **port 7777** (default). You can connect using the SA-MP or open.mp client to `localhost:7777`.
+The server starts on **port 7777** (configurable in `config.json`). Connect with a SA-MP or open.mp client to `localhost:7777`.
 
 ---
 
@@ -140,10 +155,11 @@ The server will start on **port 7777** (default). You can connect using the SA-M
 
 | Problem | Solution |
 |---------|----------|
-| `MySQL failed to connect` | Double-check your `mysql.ini` — make sure the hostname, username, password, and database name are correct |
-| Compiler error on `sampctl build` | Make sure you are using compiler **3.10.11**, not 3.10.10 |
-| Tables missing in database | Set `SETUP_TABLE` to `true` in `constants.inc`, run the server once, then set it back to `false` |
-| Server crashes immediately after start | Check `log.txt` in the root directory for detailed error messages |
+| `MySQL failed to connect` | Check `mysql.ini` in the project root — verify hostname, username, password, and database name |
+| Compiler errors on `sampctl build` | Ensure you replaced the compiler with version **3.10.11** |
+| Missing tables at runtime | Import the `.sql` files from `scriptfiles/` manually, or set `SETUP_TABLE` to `true` in `constants.inc` and recompile |
+| Server crashes on startup | Check `log.txt` for error details; verify all plugins are in the `plugins/` directory |
+| `plugin failed to load` | Download the correct plugin binaries (`.dll` for Windows, `.so` for Linux) from the links in `pawn.json` |
 
 # How to contribute.
 
