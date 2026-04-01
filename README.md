@@ -21,26 +21,111 @@
 
 # Running & Compiling
 
-### Compiling & Ensuring
-    Running this gamemode might be a little tricky because we recently migrated to open.mp
-    take note that you need compiler 3.10.11 to compile this gamemode (sampctl has 3.10.10).
-    replace the compiler at sampctl's AppData with 3.10.11 which can be downloaded in open.mp's files and make the folder named `pawn` inside the `sampctl` folder to read only access so it won't be replaced with 3.10.10 again every time you compile.
+## Prerequisites
 
-    Ensure dependencies using `sampctl ensure` and build it with `sampctl build`.
+Before getting started, make sure you have the following installed:
 
-### Running
-    Before running this gamemode if you don't have the tables required the gamemode itself will create one for you just go to `gamemode -> core -> constants.inc` and change the value of `##define SETUP_TABLE` to true, once you have the tables you can set this to false again.
+- [**sampctl**](https://github.com/Southclaws/sampctl) — Package manager for SA-MP/open.mp
+- [**MySQL Server**](https://dev.mysql.com/downloads/) — Database server (MySQL 5.7+ or MariaDB)
+- [**open.mp Server**](https://github.com/openmultiplayer/open.mp/releases) — The `omp-server.exe` binary (already included in this repo)
 
-    The gamemode uses a file to connect to databases create a file named `mysql.ini` in the main directory. The variables are as follows
+---
 
-    ```bash
-        hostname=
-        username=
-        pass= # delete when your database doesn't require a password
-        database=
-    ```
+## Step 1 — Compile the Gamemode
 
-    After that you can now run the gamemode by running omp-server.exe
+> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**. By default, `sampctl` ships with version 3.10.10, which is **not compatible**.
+
+### Replacing the compiler
+
+1. Download compiler **3.10.11** from the [open.mp releases page](https://github.com/openmultiplayer/open.mp/releases)
+2. Navigate to the `sampctl` compiler folder in your AppData:
+
+   ```
+   %LOCALAPPDATA%\sampctl\pawn\
+   ```
+
+3. **Replace** all existing compiler files with the 3.10.11 version
+4. Right-click the `pawn` folder → **Properties** → check **Read-only** → **Apply**
+   > This prevents `sampctl` from re-downloading compiler 3.10.10 every time you compile.
+
+### Compiling
+
+```bash
+# 1. Download all required libraries and dependencies
+sampctl ensure
+
+# 2. Build the gamemode
+sampctl build
+```
+
+If successful, the compiled `main.amx` file will appear in the `gamemodes/` folder.
+
+---
+
+## Step 2 — Set Up the MySQL Database
+
+### 2a. Create the database configuration file
+
+Create a file named **`mysql.ini`** in the **root directory** of the project with the following contents:
+
+```ini
+hostname=localhost
+username=root
+pass=yourpassword
+database=gtaopen
+```
+
+> **Tip:** If your MySQL server does not require a password, **remove the `pass=` line** entirely.
+
+### 2b. Create the database
+
+Open your MySQL client (or phpMyAdmin) and create a new database:
+
+```sql
+CREATE DATABASE gtaopen;
+```
+
+### 2c. Auto-generate tables
+
+The gamemode can automatically create all required database tables:
+
+1. Open `gamemodes/core/constants.inc`
+2. Find the following line:
+
+   ```pawn
+   #define SETUP_TABLE    (true)
+   ```
+
+3. Make sure the value is set to `true` for the **first time** you run the server
+4. **After the server has started and the tables have been created**, change it back to `false`:
+
+   ```pawn
+   #define SETUP_TABLE    (false)
+   ```
+
+---
+
+## Step 3 — Run the Server
+
+Once the gamemode is compiled and the database is set up:
+
+```bash
+# Start the open.mp server
+omp-server.exe
+```
+
+The server will start on **port 7777** (default). You can connect using the SA-MP or open.mp client to `localhost:7777`.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `MySQL failed to connect` | Double-check your `mysql.ini` — make sure the hostname, username, password, and database name are correct |
+| Compiler error on `sampctl build` | Make sure you are using compiler **3.10.11**, not 3.10.10 |
+| Tables missing in database | Set `SETUP_TABLE` to `true` in `constants.inc`, run the server once, then set it back to `false` |
+| Server crashes immediately after start | Check `log.txt` in the root directory for detailed error messages |
 
 # How to contribute.
 
