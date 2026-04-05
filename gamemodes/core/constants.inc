@@ -38,10 +38,18 @@
 #define MAX_PLATE_NAME          24
 #define MAX_BAN_REASON          32
 #define MAX_VEHICLE_PER_PLAYER  2
+#define MAX_ATMS                50
+
+// player items settings
 #define MAX_CRACK               5
 #define MAX_WEED                5
+#define MAX_ORANGES             50
+#define MAX_BOTTLES             25
+#define MAX_ORANGEJUICE         25
+#define MAX_FRUITPICKER         1
 #define MAX_ITEM                10
-#define MAX_ATMS                50
+#define MIN_ITEM                1
+
 
 // Gang limits
 #define MAX_GANGS 10
@@ -95,4 +103,3 @@ enum {
     TEAM_ARMY,
     TEAM_MEDIC
 }
-
