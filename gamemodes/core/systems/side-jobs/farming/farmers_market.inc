@@ -32,8 +32,8 @@ new const BuyNames[][32] = {
 };
 
 new const BuyPrices[MAX_BUY_ITEMS] = {
-    5000,
-    150
+    2500,
+    75
 };
 
 // ==================== SELL ITEMS ====================
@@ -46,8 +46,8 @@ new const SellNames[][32] = {
 };
 
 new const SellPrices[MAX_SELL_ITEMS] = {
-    200,
-    850
+    400,
+    1200
 };
 
 // ==================== DIALOG IDS ====================

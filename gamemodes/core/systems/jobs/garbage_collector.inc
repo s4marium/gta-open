@@ -2,8 +2,8 @@
 
 #include <YSI_Coding\y_hooks>
 
-#define     TRASH_BAG_VALUE     (125)    	// value of a collected trash bag (default: 125)
-#define     REFILL_TIME         (300)   	// trash container refill time - in seconds (default: 300)
+#define     TRASH_BAG_VALUE     (375)    	// value of a collected trash bag (default: 125)
+#define     REFILL_TIME         (150)   	// trash container refill time - in seconds (default: 300)
 #define     ATTACHMENT_INDEX    (4)     	// for setplayerattachedobject (default: 4)
 #define     TRASH_LIMIT         (10)    	// trashmaster capacity (default: 10)
 

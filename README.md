@@ -21,53 +21,9 @@
 
 # Running & Compiling
 
-## Prerequisites
-
-- [**sampctl**](https://github.com/Southclaws/sampctl) — Package manager for SA-MP/open.mp
-- [**MySQL Server**](https://dev.mysql.com/downloads/) — MySQL 5.7+ or MariaDB
-- [**open.mp Server**](https://github.com/openmultiplayer/open.mp/releases) — `omp-server.exe` (Windows) or `omp-server` (Linux)
-
-The server requires the following plugins (already configured in `config.json`):
-
-| Plugin | Purpose |
-|--------|---------|
-| `crashdetect` | Runtime crash diagnostics |
-| `mysql` | MySQL database driver |
-| `sscanf` | String parsing |
-| `streamer` | Object/checkpoint streaming |
-| `pawn-memory` | Extended memory access |
-| `samp_bcrypt` | Password hashing |
-
----
-
 ## Step 1 — Compile the Gamemode
 
-> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**. By default, `sampctl` ships with 3.10.10, which is **not compatible**.
-
-### 1a. Replace the compiler
-
-Download compiler **3.10.11** from the [open.mp releases page](https://github.com/openmultiplayer/open.mp/releases), then replace the compiler files in your `sampctl` cache:
-
-**Windows:**
-```
-%LOCALAPPDATA%\sampctl\pawn\
-```
-
-**Linux:**
-```bash
-~/.sampctl/pawn/
-```
-
-After replacing, make the folder read-only so `sampctl` does not overwrite it:
-
-**Windows:** Right-click the `pawn` folder > **Properties** > check **Read-only** > **Apply**
-
-**Linux:**
-```bash
-chmod -R a-w ~/.sampctl/pawn/
-```
-
-### 1b. Install dependencies and build
+> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**, which is shipped with `sampctl` by default.
 
 ```bash
 sampctl ensure
@@ -151,15 +107,6 @@ The server starts on **port 7777** (configurable in `config.json`). Connect with
 
 ---
 
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `MySQL failed to connect` | Check `mysql.ini` in the project root — verify hostname, username, password, and database name |
-| Compiler errors on `sampctl build` | Ensure you replaced the compiler with version **3.10.11** |
-| Missing tables at runtime | Import the `.sql` files from `scriptfiles/` manually, or set `SETUP_TABLE` to `true` in `constants.inc` and recompile |
-| Server crashes on startup | Check `log.txt` for error details; verify all plugins are in the `plugins/` directory |
-| `plugin failed to load` | Download the correct plugin binaries (`.dll` for Windows, `.so` for Linux) from the links in `pawn.json` |
 
 # How to contribute.
 
