@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS player_stats
     money bigint(20) NOT NULL DEFAULT '0',
     score int(11) NOT NULL DEFAULT '0',
     skin smallint(4) NOT NULL DEFAULT '0',
+    xp int(11) NOT NULL DEFAULT '0',
+    level smallint(4) NOT NULL DEFAULT '1',
     PRIMARY KEY
         (u_id),
     FOREIGN KEY

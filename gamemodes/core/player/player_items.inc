@@ -1,5 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
+forward PlayerItems_SaveInventory(playerid);
+
 static
     PlayerC4[MAX_PLAYERS],
     PlayerCrack[MAX_PLAYERS],
@@ -8,7 +10,16 @@ static
     PlayerWallet[MAX_PLAYERS],
     PlayerCondom[MAX_PLAYERS],
     PlayerRope[MAX_PLAYERS],
-    PlayerScissors[MAX_PLAYERS];
+    PlayerScissors[MAX_PLAYERS],
+    PlayerOranges[MAX_PLAYERS],
+    PlayerBottles[MAX_PLAYERS],
+    PlayerOrangeJuice[MAX_PLAYERS],
+    PlayerFruitPicker[MAX_PLAYERS],
+
+    // statements for initializing on OnGameModeInit
+    Statement: g_stmt_insert_player_items,
+    Statement: g_stmt_load_player_items,
+    Statement: g_stmt_save_inventory;
 
 hook OnPlayerConnect(playerid) {
     PlayerC4[playerid]          =
@@ -18,37 +29,68 @@ hook OnPlayerConnect(playerid) {
     PlayerWallet[playerid]      =
     PlayerCondom[playerid]      =
     PlayerRope[playerid]        =
-    PlayerScissors[playerid]    = 0;
+    PlayerScissors[playerid]    =
+    PlayerOranges[playerid]     =
+    PlayerBottles[playerid]     =
+    PlayerOrangeJuice[playerid] =
+    PlayerFruitPicker[playerid] = 0;
+    return 1;
+}
+
+hook OnGameModeInit() {
+    g_stmt_insert_player_items = MySQL_PrepareStatement(MySQL_GetHandle(), "INSERT INTO player_items (u_id) VALUES (?)");
+
+    static const load_query[] = "\
+        SELECT \
+            c4, \
+            crack, \
+            weed, \
+            picklock, \
+            wallet, \
+            rope, \
+            condom, \
+            scissors, \
+            oranges, \
+            bottles, \
+            orange_juice, \
+            fruit_picker \
+        FROM \
+            player_items \
+        WHERE \
+            u_id = ? \
+        ";
+    g_stmt_load_player_items = MySQL_PrepareStatement(MySQL_GetHandle(), load_query);
+
+    g_stmt_save_inventory = MySQL_PrepareStatement(MySQL_GetHandle(),
+        "UPDATE player_items SET c4=?, crack=?, weed=?, picklock=?, wallet=?, condom=?, rope=?, scissors=?, oranges=?, bottles=?, orange_juice=?, fruit_picker=? WHERE u_id=?");
+
     return 1;
 }
 
 hook OnPlayerRegister(playerid) {
-    new
-        Statement: stmt_insert;
-
-    stmt_insert = MySQL_PrepareStatement(MySQL_GetHandle(), "INSERT INTO player_items (u_id) VALUES (?)");
-
-    MySQL_BindInt(stmt_insert, 0, Player_GetAccountID(playerid));
-    MySQL_ExecuteThreaded(stmt_insert);
-    MySQL_StatementClose(stmt_insert);
+    MySQL_BindInt(g_stmt_insert_player_items, 0, Player_GetAccountID(playerid));
+    MySQL_ExecuteThreaded(g_stmt_insert_player_items);
     return 1;
 }
 
 hook OnPlayerLogin(playerid) {
-    new
-        Statement: stmt_load;
-
     inline const OnItemLoad() {
-        MySQL_BindResultInt(stmt_load, 0, PlayerC4[playerid]);
-        MySQL_BindResultInt(stmt_load, 1, PlayerCrack[playerid]);
-        MySQL_BindResultInt(stmt_load, 2, PlayerWeed[playerid]);
-        MySQL_BindResultInt(stmt_load, 3, PlayerPickLock[playerid]);
-        MySQL_BindResultInt(stmt_load, 4, PlayerWallet[playerid]);
-        MySQL_BindResultInt(stmt_load, 5, PlayerCondom[playerid]);
-        MySQL_BindResultInt(stmt_load, 6, PlayerRope[playerid]);
-        MySQL_BindResultInt(stmt_load, 7, PlayerScissors[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 0, PlayerC4[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 1, PlayerCrack[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 2, PlayerWeed[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 3, PlayerPickLock[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 4, PlayerWallet[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 5, PlayerCondom[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 6, PlayerRope[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 7, PlayerScissors[playerid]);
+        // farming player inventory
+        MySQL_BindResultInt(g_stmt_load_player_items, 8, PlayerOranges[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 9, PlayerBottles[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 10, PlayerOrangeJuice[playerid]);
+        MySQL_BindResultInt(g_stmt_load_player_items, 11, PlayerFruitPicker[playerid]);
 
-        if(!MySQL_Statement_FetchRow(stmt_load)) {
+
+        if(!MySQL_Statement_FetchRow(g_stmt_load_player_items)) {
             Logger_Dbg(
                 "player_items",
                 "[OnPlayerLogin / player_items.inc] Oops player_items did not load properly.",
@@ -58,26 +100,8 @@ hook OnPlayerLogin(playerid) {
         }
     }
 
-    static const query[] = "\
-    SELECT \
-        c4, \
-        crack, \
-        weed, \
-        picklock, \
-        wallet, \
-        rope, \
-        condom, \
-        scissors \
-    FROM \
-        player_items \
-    WHERE \
-        u_id = ? \
-    ";
-
-    stmt_load = MySQL_PrepareStatement(MySQL_GetHandle(), query);
-    MySQL_BindInt(stmt_load, 0, Player_GetAccountID(playerid));
-    MySQL_ExecuteThreaded_Inline(stmt_load, using inline OnItemLoad);
-    MySQL_StatementClose(stmt_load);
+    MySQL_BindInt(g_stmt_load_player_items, 0, Player_GetAccountID(playerid));
+    MySQL_ExecuteThreaded_Inline(g_stmt_load_player_items, using inline OnItemLoad);
     return 1;
 }
 
@@ -169,7 +193,74 @@ stock Player_GetScissors(playerid) {
     return PlayerScissors[playerid];
 }
 
-// Internal Function
+// farming inv
+// Oranges
+stock void:Player_GiveOranges(playerid, amount) {
+    PlayerOranges[playerid] += amount;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock void:Player_RemoveOranges(playerid, amount) {
+    PlayerOranges[playerid] -= amount;
+    if(PlayerOranges[playerid] < 0) PlayerOranges[playerid] = 0;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock Player_GetOranges(playerid) {
+    return PlayerOranges[playerid];
+}
+
+// Bottles
+stock void:Player_GiveBottles(playerid, amount) {
+    PlayerBottles[playerid] += amount;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock void:Player_RemoveBottles(playerid, amount) {
+    PlayerBottles[playerid] -= amount;
+    if(PlayerBottles[playerid] < 0) PlayerBottles[playerid] = 0;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock Player_GetBottles(playerid) {
+    return PlayerBottles[playerid];
+}
+
+// Orange Juice
+stock void:Player_GiveOrangeJuice(playerid, amount) {
+    PlayerOrangeJuice[playerid] += amount;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock void:Player_RemoveOrangeJuice(playerid, amount) {
+    PlayerOrangeJuice[playerid] -= amount;
+    if(PlayerOrangeJuice[playerid] < 0) PlayerOrangeJuice[playerid] = 0;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock Player_GetOrangeJuice(playerid) {
+    return PlayerOrangeJuice[playerid];
+}
+
+// Fruit Picker
+stock void:Player_GiveFruitPicker(playerid, amount) {
+    PlayerFruitPicker[playerid] += amount;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock void:Player_RemoveFruitPicker(playerid, amount) {
+    PlayerFruitPicker[playerid] -= amount;
+    if(PlayerFruitPicker[playerid] < 0) PlayerFruitPicker[playerid] = 0;
+    PlayerItems_SaveInventory(playerid);
+}
+
+stock Player_GetFruitPicker(playerid) {
+    return PlayerFruitPicker[playerid];
+}
+
+
+
+// Internal Function - Save single item
 static void:_SaveItem(playerid, const itemName[], value) {
     new
         Statement: stmt_saveItem;
@@ -184,7 +275,36 @@ static void:_SaveItem(playerid, const itemName[], value) {
     MySQL_BindInt(stmt_saveItem, 2, value);
     MySQL_BindInt(stmt_saveItem, 3, Player_GetAccountID(playerid));
     MySQL_ExecuteThreaded(stmt_saveItem);
+}
 
+// Save complete inventory to database
+public PlayerItems_SaveInventory(playerid) {
+    new accountID = Player_GetAccountID(playerid);
+
+    if(accountID <= 0) return 0;
+
+    MySQL_BindInt(g_stmt_save_inventory, 0, PlayerC4[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 1, PlayerCrack[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 2, PlayerWeed[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 3, PlayerPickLock[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 4, PlayerWallet[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 5, PlayerCondom[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 6, PlayerRope[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 7, PlayerScissors[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 8, PlayerOranges[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 9, PlayerBottles[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 10, PlayerOrangeJuice[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 11, PlayerFruitPicker[playerid]);
+    MySQL_BindInt(g_stmt_save_inventory, 12, accountID);
+
+    MySQL_ExecuteThreaded(g_stmt_save_inventory);
+
+    return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+    PlayerItems_SaveInventory(playerid);
+    return 1;
 }
 
 static _ItemPlayerHoldingValue(playerid, itemId) {
@@ -197,6 +317,10 @@ static _ItemPlayerHoldingValue(playerid, itemId) {
         case 5: return Player_GetCondom(playerid);
         case 6: return Player_GetRope(playerid);
         case 7: return Player_GetScissors(playerid);
+        case 8: return Player_GetOranges(playerid);
+        case 9: return Player_GetBottles(playerid);
+        case 10: return Player_GetOrangeJuice(playerid);
+        case 11: return Player_GetFruitPicker(playerid);
     }
     return -1;
 }
@@ -211,6 +335,10 @@ static void:_GiveItem(playerid, itemId, amount) {
         case 5: Player_GiveCondom(playerid, amount);
         case 6: Player_GiveRope(playerid, amount);
         case 7: Player_GiveScissors(playerid, amount);
+        case 8: Player_GiveOranges(playerid, amount);
+        case 9: Player_GiveBottles(playerid, amount);
+        case 10: Player_GiveOrangeJuice(playerid, amount);
+        case 11: Player_GiveFruitPicker(playerid, amount);
     }
 }
 
@@ -218,10 +346,10 @@ static void:_GiveItem(playerid, itemId, amount) {
 ACMD:[4]giveitem(playerid, params[]) {
     new
         targetid,
-        type[9],
+        type[13],
         amount;
 
-    if(sscanf(params, "us[9]i", targetid, type, amount)) {
+    if(sscanf(params, "us[13]i", targetid, type, amount)) {
         return SendSyntaxMsg(playerid, "/giveitem [playerid] [type] [amount]");
     }
 
@@ -233,7 +361,11 @@ ACMD:[4]giveitem(playerid, params[]) {
         "wallet",
         "condom",
         "rope",
-        "scissors"
+        "scissors",
+        "oranges",
+        "bottles",
+        "orangejuice",
+        "fruitpicker"
     };
 
     static const itemLimit[] = {
@@ -244,7 +376,11 @@ ACMD:[4]giveitem(playerid, params[]) {
         MAX_ITEM,
         MAX_ITEM,
         MAX_ITEM,
-        MAX_ITEM
+        MAX_ITEM,
+        MAX_ORANGES,
+        MAX_BOTTLES,
+        MAX_ORANGEJUICE,
+        MAX_FRUITPICKER
     };
 
     new
@@ -264,7 +400,7 @@ ACMD:[4]giveitem(playerid, params[]) {
                 playerid,
                 "invalid type \
                 ~n~valid types: \
-                ~n~[~y~c4, crack, weed, picklock, wallet, condom, rope~w~]"
+                ~n~[~y~c4, crack, weed, picklock, wallet, condom, rope, scissors, orange, bottles, orangejuice, fruitpicker~w~]"
             );
     }
 

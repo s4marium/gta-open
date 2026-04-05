@@ -22,3 +22,6 @@
 #include <lotto_system>
 #include <moneybag_system>
 #include <dumpster_diving>
+
+//side jobs
+#include <side-jobs>
