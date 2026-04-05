@@ -23,8 +23,6 @@
 
 ## Step 1 — Compile the Gamemode
 
-> **Important:** This gamemode requires **Pawn Compiler version 3.10.11**, which is shipped with `sampctl` by default.
-
 ```bash
 sampctl ensure
 sampctl build
