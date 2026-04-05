@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS player_items (
     rope tinyint(4) NOT NULL DEFAULT 0,
     condom tinyint(4) NOT NULL DEFAULT 0,
     scissors tinyint(4) NOT NULL DEFAULT 0,
+    oranges tinyint(4) NOT NULL DEFAULT 0,
+    bottles tinyint(4) NOT NULL DEFAULT 0,
+    orange_juice tinyint(4) NOT NULL DEFAULT 0,
+    fruit_picker tinyint(4) NOT NULL DEFAULT 0,
     UNIQUE KEY
         u_id (u_id),
     FOREIGN KEY
