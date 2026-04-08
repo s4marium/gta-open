@@ -1,3 +1,6 @@
+
+//    Written by s4marium
+
 #include <YSI_Coding\y_hooks>
 
 #define DUMPSTER_SEARCH_TIME        (10)        // Time to search dumpster in seconds

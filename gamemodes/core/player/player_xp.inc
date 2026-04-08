@@ -1,4 +1,6 @@
 /*
+    Written by s4marium
+
    todo:
         - Add admin command to set player XP/level (e.g. /setxp [player] [amount], /setlevel [player] [level])
         - Add more XP gain sources (e.g. completing missions, killing NPCs, etc.)
@@ -145,7 +147,7 @@ stock bool:GivePlayerXp(playerid, amount) {
 		PlayerXpData[playerid][pLevel]++;
 
 		// Level up notification
-		SendClientMessage(playerid, 0xFF0000AA, "Congratulations! You have leveled up!");
+		SendClientMessage(playerid, COLOR_RED, "Congratulations!"C_WHITE" You have leveled up!");
 		PlayerPlaySound(playerid, 17803, 0.0, 0.0, 0.0);
 
 		// Update score to match level

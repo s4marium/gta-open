@@ -1,4 +1,6 @@
 /*
+    Written by s4marium
+
     todo:
     - need to change the configs for the actors locations its with the same as textlabels
     - set the ideal prices on each items
