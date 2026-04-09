@@ -86,6 +86,8 @@
 				"gamemodes/core/player/attachment",
 				"gamemodes/core/admin",
 				"gamemodes/core/systems",
+				"gamemodes/core/systems/mini-games",
+				"gamemodes/core/systems/mini-games/keymash",
 				"gamemodes/core/systems/jobs",
 				"gamemodes/core/systems/side-jobs",
 				"gamemodes/core/systems/side-jobs/farming",

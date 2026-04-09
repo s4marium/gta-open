@@ -1,6 +1,8 @@
 
 /*
- todo: - Add level up textdraw for congratulations (e.g. textdraw, sound, etc.)
+    Written by s4marium
+
+				todo: - Add level up textdraw for congratulations (e.g. textdraw, sound, etc.)
  */
 
 #include <YSI_Coding\y_hooks>
@@ -35,6 +37,15 @@
 #define XP_TEXT_AMOUNT_Y 240.0
 
 // =============================================================================
+// FADE CONFIGURATION
+// =============================================================================
+#define XP_FADE_INTERVAL 50
+#define XP_MAX_TEXT_ALPHA 255
+#define XP_FADE_STEP 25
+#define XP_FADE_IN_DURATION 500
+#define XP_SHOW_DURATION 6000
+
+// =============================================================================
 // TYPES
 // =============================================================================
 
@@ -54,6 +65,14 @@ enum E_XP_UI_DATA
 
 static XpUIData[MAX_PLAYERS][E_XP_UI_DATA];
 static bool:XpUICreated[MAX_PLAYERS];
+
+// Alpha values for fade effects
+static XpUI_TextAlpha[MAX_PLAYERS][6];
+
+// Timer variables for fade effects
+static XpUI_FadeInTimer[MAX_PLAYERS];
+static XpUI_FadeOutTimer[MAX_PLAYERS];
+static XpUI_HideTimer[MAX_PLAYERS];
 
 // =============================================================================
 // HOOKS
@@ -237,6 +256,17 @@ XpUI_ShowGain(playerid, amount) {
 		return;
 	}
 
+	// Kill any existing timers
+	if (XpUI_FadeInTimer[playerid]) {
+		KillTimer(XpUI_FadeInTimer[playerid]);
+	}
+	if (XpUI_FadeOutTimer[playerid]) {
+		KillTimer(XpUI_FadeOutTimer[playerid]);
+	}
+	if (XpUI_HideTimer[playerid]) {
+		KillTimer(XpUI_HideTimer[playerid]);
+	}
+
 	new str[32];
 
 	// Update and show progress bar info
@@ -248,34 +278,43 @@ XpUI_ShowGain(playerid, amount) {
 
 	format(str, sizeof(str), "%d", currentLevel);
 	PlayerTextDrawSetString(playerid, XpUIData[playerid][levelCurrentText], str);
-	PlayerTextDrawShow(playerid, XpUIData[playerid][levelCurrentText]);
 
 	format(str, sizeof(str), "%d", nextLevel);
 	PlayerTextDrawSetString(playerid, XpUIData[playerid][levelNextText], str);
-	PlayerTextDrawShow(playerid, XpUIData[playerid][levelNextText]);
 
 	format(str, sizeof(str), "%d/%d", currentXp, xpRequired);
 	PlayerTextDrawSetString(playerid, XpUIData[playerid][progressText], str);
-	PlayerTextDrawShow(playerid, XpUIData[playerid][progressText]);
 
 	SetPlayerProgressBarMaxValue(playerid, XpUIData[playerid][xpBar], float(xpRequired));
 	SetPlayerProgressBarValue(playerid, XpUIData[playerid][xpBar], float(currentXp));
-	ShowPlayerProgressBar(playerid, XpUIData[playerid][xpBar]);
 
 	// Show gain label and amount
-	PlayerTextDrawShow(playerid, XpUIData[playerid][gainText]);
-
 	format(str, sizeof(str), "%d", amount);
 	PlayerTextDrawSetString(playerid, XpUIData[playerid][amountText], str);
-	PlayerTextDrawShow(playerid, XpUIData[playerid][amountText]);
 
-	// Hide after 6 seconds using YSI defer
-	defer XpUI_HideGain(playerid);
+	// Initialize alpha values for fade in
+	for (new i = 0; i < 5; i++) {
+		XpUI_TextAlpha[playerid][i] = 0;
+	}
+
+	// Start fade in
+	XpUI_FadeInTimer[playerid] = SetTimerEx("XpUI_FadeIn", XP_FADE_INTERVAL, false, "i", playerid);
 }
 
 XpUI_Destroy(playerid) {
 	if(!XpUICreated[playerid]) {
 		return;
+	}
+
+	// Kill any active timers
+	if (XpUI_FadeInTimer[playerid]) {
+		KillTimer(XpUI_FadeInTimer[playerid]);
+	}
+	if (XpUI_FadeOutTimer[playerid]) {
+		KillTimer(XpUI_FadeOutTimer[playerid]);
+	}
+	if (XpUI_HideTimer[playerid]) {
+		KillTimer(XpUI_HideTimer[playerid]);
 	}
 
 	HidePlayerProgressBar(playerid, XpUIData[playerid][xpBar]);
@@ -289,18 +328,109 @@ XpUI_Destroy(playerid) {
 }
 
 // =============================================================================
-// TIMER CALLBACKS
+// FADE EFFECT FUNCTIONS
 // =============================================================================
 
-timer XpUI_HideGain[6000](playerid) {
-	if(!XpUICreated[playerid]) {
-		return;
+// Helper function to get the color for a text element by index
+static XpUI_GetTextColor(index) {
+	switch (index) {
+		case 0, 1: return COLOR_XP_RED;      // levelCurrentText, levelNextText
+		case 2, 4: return COLOR_XP_TEXT;     // progressText, amountText
+		case 3: return COLOR_XP_GAIN;        // gainText
+		default: return COLOR_XP_TEXT;
+	}
+}
+
+// Helper function to get the TextDraw by index
+static PlayerText:XpUI_GetTextDraw(playerid, index) {
+	switch (index) {
+		case 0: return XpUIData[playerid][levelCurrentText];
+		case 1: return XpUIData[playerid][levelNextText];
+		case 2: return XpUIData[playerid][progressText];
+		case 3: return XpUIData[playerid][gainText];
+		case 4: return XpUIData[playerid][amountText];
+		default: return PlayerText:INVALID_TEXT_DRAW;
+	}
+}
+
+forward XpUI_FadeIn(playerid);
+forward XpUI_FadeOut(playerid);
+
+public XpUI_FadeIn(playerid) {
+	if (!XpUICreated[playerid]) {
+		return 1;
 	}
 
-	HidePlayerProgressBar(playerid, XpUIData[playerid][xpBar]);
-	PlayerTextDrawHide(playerid, XpUIData[playerid][levelCurrentText]);
-	PlayerTextDrawHide(playerid, XpUIData[playerid][levelNextText]);
-	PlayerTextDrawHide(playerid, XpUIData[playerid][progressText]);
-	PlayerTextDrawHide(playerid, XpUIData[playerid][gainText]);
-	PlayerTextDrawHide(playerid, XpUIData[playerid][amountText]);
+	// Increment and cap alpha for all text elements
+	for (new i = 0; i < 5; i++) {
+		XpUI_TextAlpha[playerid][i] += XP_FADE_STEP;
+		if (XpUI_TextAlpha[playerid][i] > XP_MAX_TEXT_ALPHA) {
+			XpUI_TextAlpha[playerid][i] = XP_MAX_TEXT_ALPHA;
+		}
+	}
+
+	// Update text colors with new alpha
+	for (new i = 0; i < 5; i++) {
+		new textColor = XpUI_GetTextColor(i);
+		new PlayerText:td = XpUI_GetTextDraw(playerid, i);
+		PlayerTextDrawColour(playerid, td, (textColor & 0xFFFFFF00) | (XpUI_TextAlpha[playerid][i] & 0xFF));
+		PlayerTextDrawShow(playerid, td);
+	}
+
+	// Also show progress bar
+	ShowPlayerProgressBar(playerid, XpUIData[playerid][xpBar]);
+
+	// Continue fading in or start show duration
+	if (XpUI_TextAlpha[playerid][0] < XP_MAX_TEXT_ALPHA) {
+		XpUI_FadeInTimer[playerid] = SetTimerEx("XpUI_FadeIn", XP_FADE_INTERVAL, false, "i", playerid);
+	} else {
+		// Fade in complete, show for duration before fading out
+		XpUI_HideTimer[playerid] = SetTimerEx("XpUI_StartFadeOut", XP_SHOW_DURATION, false, "i", playerid);
+	}
+	return 1;
+}
+
+forward XpUI_StartFadeOut(playerid);
+public XpUI_StartFadeOut(playerid) {
+	if (!XpUICreated[playerid]) {
+		return 1;
+	}
+
+	// Start fade out
+	XpUI_FadeOutTimer[playerid] = SetTimerEx("XpUI_FadeOut", XP_FADE_INTERVAL, false, "i", playerid);
+	return 1;
+}
+
+public XpUI_FadeOut(playerid) {
+	if (!XpUICreated[playerid]) {
+		return 1;
+	}
+
+	// Decrement and prevent negative alpha for all text elements
+	for (new i = 0; i < 5; i++) {
+		XpUI_TextAlpha[playerid][i] -= XP_FADE_STEP;
+		if (XpUI_TextAlpha[playerid][i] < 0) {
+			XpUI_TextAlpha[playerid][i] = 0;
+		}
+	}
+
+	// Update text colors with new alpha
+	for (new i = 0; i < 5; i++) {
+		new textColor = XpUI_GetTextColor(i);
+		new PlayerText:td = XpUI_GetTextDraw(playerid, i);
+		PlayerTextDrawColour(playerid, td, (textColor & 0xFFFFFF00) | (XpUI_TextAlpha[playerid][i] & 0xFF));
+		PlayerTextDrawShow(playerid, td);
+	}
+
+	// Continue fading out
+	if (XpUI_TextAlpha[playerid][0] > 0) {
+		XpUI_FadeOutTimer[playerid] = SetTimerEx("XpUI_FadeOut", XP_FADE_INTERVAL, false, "i", playerid);
+	} else {
+		// Fade out complete, hide all elements
+		HidePlayerProgressBar(playerid, XpUIData[playerid][xpBar]);
+		for (new i = 0; i < 5; i++) {
+			PlayerTextDrawHide(playerid, XpUI_GetTextDraw(playerid, i));
+		}
+	}
+	return 1;
 }
