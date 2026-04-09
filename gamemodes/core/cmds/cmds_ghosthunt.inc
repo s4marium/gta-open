@@ -1,4 +1,3 @@
-#include <YSI_Coding\y_hooks>
 CMD:starthunt(playerid, params[])
 {
     new hour, minute, second;
