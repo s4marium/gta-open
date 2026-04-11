@@ -8,14 +8,14 @@
 #define MAX_GHOST_LOCATIONS         (5)             // Available ghost spawn locations
 #define GHOST_SESSION_START_HOUR    (20)            // Night starts at 8 PM (20:00)
 #define GHOST_SESSION_END_HOUR      (6)             // Night ends at 6 AM (06:00)
-#define GHOST_DETECTION_RANGE       (50.0)          // Detection range for weapon camera
-#define GHOST_CAPTURE_REWARD        (150)          // Money reward per capture
-#define GHOST_CAPTURE_XP            (20)           // XP reward per capture
-#define GHOST_ESCAPE_DISTANCE       (8.0)           // Distance at which ghost escapes
+#define GHOST_DETECTION_RANGE       (75.0)          // Detection range for weapon camera
+#define GHOST_CAPTURE_REWARD        (500)          // Money reward per capture
+#define GHOST_CAPTURE_XP            (50)           // XP reward per capture
+#define GHOST_ESCAPE_DISTANCE       (5.0)           // Distance at which ghost escapes
 #define GHOST_OBJECT_ID             (3092)          // Ghost object model ID
 #define GHOST_LABEL_DISTANCE        (30.0)          // 3D text label distance
 #define GHOST_LABEL_HEIGHT          (2.0)           // 3D text label height offset
-#define GHOST_DETECTION_INCREMENT   (5)             // Detection percentage per scan
+#define GHOST_DETECTION_INCREMENT   (8)             // Detection percentage per scan
 
 // Message Strings
 #define MSG_NIGHT_START             "[SERVER]"C_WHITE" The sun has set! Ghost hunting season has begun! Type /starthunt to begin hunting!"
