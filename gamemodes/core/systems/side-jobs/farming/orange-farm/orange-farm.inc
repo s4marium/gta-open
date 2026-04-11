@@ -1,4 +1,6 @@
 /*
+     Written by s4marium
+
      todo:
      - need to add dynamic trees for this that is connected tree state,
        that can be respawned and destroy.
@@ -75,7 +77,7 @@ hook OnPlayerConnect(playerid) {
      }
 
      // Initialize mini-game textdraws for this player
-     MiniGame_InitPlayer(playerid);
+     Keymash_InitPlayer(playerid);
 
      return 1;
 }
@@ -90,7 +92,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
      // Handle mini-game key input
-     MiniGame_OnKeyStateChange(playerid, newkeys, oldkeys);
+     Keymash_OnKeyStateChange(playerid, newkeys, oldkeys);
 
      if(PRESSED(KEY_NO)) {
           new treeIndex = Orange_GetNearestTree(playerid);
@@ -123,7 +125,7 @@ Orange_StartCollection(playerid, treeIndex) {
      OrangePlayerState[playerid][IsCollecting] = true;
      OrangePlayerState[playerid][CurrentTree] = treeIndex;
      TreeAvailable[playerid][treeIndex] = false;
-
+     ShowPlayerPopup(playerid, "Orange Farm Sessions:", "To fill the skill bar press ~g~SPACE~w~ or ~g~SHIFT~w~. To cancel the Orange Farm Session press ~y~ALT~w~ button!", 5000);
      new labelText[128];
      format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"BEING COLLECTED");
      UpdateDynamic3DTextLabelText(OrangeTreeLabels[treeIndex], COLOR_YELLOW, labelText);
@@ -132,7 +134,7 @@ Orange_StartCollection(playerid, treeIndex) {
      ApplyAnimation(playerid, "BD_FIRE", "wash_up", 4.0, true, false, false, false, 0, 1);
      SetPlayerAttachedObject(playerid, 9, 19583, 6);
 
-     MiniGame_Start(playerid, MINIGAME_TYPE_HARVEST, treeIndex, "[ORANGE HARVEST]");
+     Keymash_Start(playerid, KEYMASH_TYPE_HARVEST, treeIndex, "[ORANGE HARVEST]", "Press 'SPACE' to harvest");
 
      #if ORANGE_FARM_DEBUG
      printf("[ORANGE] Player %d started collecting at tree %d", playerid, treeIndex);
@@ -221,7 +223,7 @@ Orange_ShowProcessDialog(playerid) {
 public Orange_ProcessComplete(playerid, amount) {
      Player_GiveOrangeJuice(playerid, amount);
      new reward = amount * ORANGE_SALE_PRICE_JUICE;
-     GivePlayerXp(playerid, reward); 
+     GivePlayerXp(playerid, reward);
      GivePlayerMoney(playerid, reward);
 
      TogglePlayerControllable(playerid, true);
