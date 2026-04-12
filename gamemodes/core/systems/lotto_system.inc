@@ -1,6 +1,6 @@
 #define LOTTO_MAX_JACKPOT 		(15000) //+15, 000
 #define LOTTO_MIN_JACKPOT		(5000) //+5, 000
-#define LOTTO_START     		(25000) //25, 000 starting lotto price
+#define LOTTO_START     		(25000) //25, 000 starting jackpot
 #define MAX_LOTTO_INPUT			(MAX_PLAYERS)
 
 #define TICKET_PRICE      		(500)
@@ -32,13 +32,13 @@ hook OnPlayerConnect(playerid) {
 
 hook OnServerSecondUpdate() {
 
-    // only show the message every 2 minutes
+    // only show the message every 72 seconds
     if(gettime() - lottoLastTick < (72)) {
         // go to next hook.
         return 1;
     }
 
-    // draw every 10 minutes.
+    // draw every ~6 minutes.
     if(lottoDrawCounter == 5) { // draws every ~6 minutes (5 * 72s)
         new
             genRandomNum = 10,//random(MAX_LOTTO_INPUT - 1) + 1,
@@ -143,6 +143,6 @@ CMD:lotto(playerid, params[]) {
     GivePlayerMoney(playerid, -TICKET_PRICE); //Takes away the ticket cost.
 
     SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"You have bought a lottery ticket! Your lotto "C_GREY"#%i"C_WHITE", just wait for the next draw for reults!", lottoID);
-    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"Draws are held every "C_GREY"10 "C_WHITE"minutes and the winners are announced. The current jackpot is "C_GREEN"%m", LottoJackpot);
+    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"Draws are held every "C_GREY"~6 "C_WHITE"minutes and the winners are announced. The current jackpot is "C_GREEN"%m", LottoJackpot);
     return 1;
 }

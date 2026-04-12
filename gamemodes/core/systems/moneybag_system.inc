@@ -583,7 +583,7 @@ hook OnPlayerPickUpDynPickup(playerid, pickupid) {
     return 1;
 }
 
-// 12 minutes.
+// 8 minutes.
 task OnMoneyBagUpdate[1000 * 60 * 8]() {
     new
 		moneybaglocation[MAX_MAP_ZONE_NAME];
