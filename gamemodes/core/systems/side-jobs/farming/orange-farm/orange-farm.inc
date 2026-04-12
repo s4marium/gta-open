@@ -325,7 +325,7 @@ public Orange_MiniGame_OnComplete(playerid, customData) {
      RemovePlayerAttachedObject(playerid, 9);
 
      new labelText[128];
-     format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: 30s");
+     format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: %ds", ORANGE_RESPAWN_TIME / 1000);
      UpdateDynamic3DTextLabelText(OrangeTreeLabels[customData], COLOR_YELLOW, labelText);
 
      new msg[128];
@@ -333,7 +333,7 @@ public Orange_MiniGame_OnComplete(playerid, customData) {
      Notify_Send(playerid, msg, 3000);
 
      SetTimerEx("Orange_RespawnTree", ORANGE_RESPAWN_TIME, false, "i", customData);
-     TreeRespawnTime[customData] = 15;
+     TreeRespawnTime[customData] = (ORANGE_RESPAWN_TIME / 1000);
      if(TreeRespawnTimer[customData]) KillTimer(TreeRespawnTimer[customData]);
      TreeRespawnTimer[customData] = SetTimerEx("Orange_UpdateTreeTimer", 1000, true, "i", customData);
 
