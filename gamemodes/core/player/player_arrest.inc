@@ -20,8 +20,8 @@ hook OnPlayerDeathEx(playerid, killerid, reason)
             if(Player_GetWantedLevel(playerid) >= 10) {
                 foreach(new i : Player) {
                     if(Player_IsLEO(i)) {
-                        SendMsgF(playerid, COLOR_BLUE, "[POLICE TAKEDOWN]: %p (%d) has taken %p (%d) with brutal force", killerid, killerid, playerid, playerid);
-                        GivePlayerMoney(playerid, 7500);
+                        SendMsgF(i, COLOR_BLUE, "[POLICE TAKEDOWN]: %p (%d) has taken %p (%d) with brutal force", killerid, killerid, playerid, playerid);
+                        GivePlayerMoney(i, 7500);
                     }
                 }
             }
