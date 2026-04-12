@@ -6,11 +6,11 @@ enum E_ITEM_SHOP_DATA {
 #define MAX_ITEMS 15
 
 static const itemsTwentyFourSeven[][E_ITEM_SHOP_DATA] = {
-    {"Picklock", 2000},
-    {"Condom",   500},
-    {"Wallet",   500},
-    {"Rope",     500},
-    {"Scissors", 250}
+    {"Picklock", 1000},
+    {"Condom",   250},
+    {"Wallet",   250},
+    {"Rope",     250},
+    {"Scissors", 150}
 };
 
 static

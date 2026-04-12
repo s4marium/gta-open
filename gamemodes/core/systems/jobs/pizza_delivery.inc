@@ -119,14 +119,14 @@ Pizza_Begin(playerid) {
 Pizza_End(playerid) {
     // Reset all the data
     IsPlayerPDelivering[playerid] = false;
-    PDeliverCooldown[playerid] = gettime() + 20;
+    PDeliverCooldown[playerid] = gettime() + 15;
     DisablePlayerRaceCheckpoint(playerid);
     UI_HideTimeLeft(playerid);
     stop PizzaDeliveryTimer[playerid];
     stop PizzaPickupTimer[playerid];
 
     // Reward Player
-    new reward = random(500) + 250;
+    new reward = random(2000) + 2500;
     GivePlayerMoney(playerid, reward);
 
     // Notify Player

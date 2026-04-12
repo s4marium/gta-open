@@ -4,9 +4,9 @@ static
     bool:BoughtChangeSkin[MAX_PLAYERS];
 
 const
-    HOSPITAL_CURE_PRICE = 3_000,
-    HOSPITAL_HEAL_PRICE = 1_000,
-    HOSPITAL_SKIN_CHANGE = 20_000;
+    HOSPITAL_CURE_PRICE = 1_500,
+    HOSPITAL_HEAL_PRICE = 500,
+    HOSPITAL_SKIN_CHANGE = 10_000;
 
 hook OnGameModeInit() {
     Create3DTextLabel("Press "C_YELLOW"~k~~CONVERSATION_YES~"C_WHITE" to view services", COLOR_WHITE, 1173.1469, -1323.4918, 16.3958, 40.0, 0, false);

@@ -94,7 +94,7 @@ Trucker_Begin(playerid) {
 
 Trucker_End(playerid) {
     IsPlayerTrucking[playerid] = false;
-    TruckingCooldown[playerid] = gettime() + 20;
+    TruckingCooldown[playerid] = gettime() + 15;
 
     DisablePlayerRaceCheckpoint(playerid);
     UI_HideTimeLeft(playerid);
@@ -108,7 +108,7 @@ hook OnPlayerEnterRaceCP(playerid)
     if(IsPlayerTrucking[playerid])
     {
         if(PlayerTruckingState[playerid] == STATE_DELIVER) {
-            new randm = random(50000);
+            new randm = random(5000) + 4000;
             GivePlayerMoney(playerid, randm);
             Trucker_End(playerid);
             SendServerMsg(playerid, "You've finished trucking!");

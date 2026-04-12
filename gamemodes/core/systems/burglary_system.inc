@@ -1,6 +1,6 @@
 #include <YSI_Coding\y_hooks>
 
-#define RobberyCD 300000
+#define RobberyCD 180000
 
 new
     Timer:burglarytimer[MAX_PLAYERS]
@@ -146,7 +146,7 @@ hook OnPlayerEnterRaceCP(playerid)
     {
         if(BurglaryInfo[playerid] == 1) //bank
         {
-            new bmrand = random(100000);
+            new bmrand = random(20000) + 15000;
             GivePlayerMoney(playerid, bmrand);
             for(new i = 0; i < MAX_PLAYERS; i++)
             {
@@ -157,7 +157,7 @@ hook OnPlayerEnterRaceCP(playerid)
         }
         if(BurglaryInfo[playerid] == 2) //casino
         {
-            new bmrand = random(50000);
+            new bmrand = random(15000) + 10000;
             GivePlayerMoney(playerid, bmrand);
             for(new i = 0; i < MAX_PLAYERS; i++)
             {
@@ -168,7 +168,7 @@ hook OnPlayerEnterRaceCP(playerid)
         }
         if(BurglaryInfo[playerid] == 3) //mansion
         {
-            new bmrand = random(200000);
+            new bmrand = random(30000) + 20000;
             GivePlayerMoney(playerid, bmrand);
             for(new i = 0; i < MAX_PLAYERS; i++)
             {
@@ -179,7 +179,7 @@ hook OnPlayerEnterRaceCP(playerid)
         }
         if(BurglaryInfo[playerid] == 4)
         {
-            new bmrand = random(100000);
+            new bmrand = random(25000) + 15000;
             GivePlayerMoney(playerid, bmrand);
             for(new i = 0; i < MAX_PLAYERS; i++)
             {

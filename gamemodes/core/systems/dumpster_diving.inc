@@ -3,8 +3,8 @@
 
 #include <YSI_Coding\y_hooks>
 
-#define DUMPSTER_SEARCH_TIME        (10)        // Time to search dumpster in seconds
-#define DUMPSTER_COOLDOWN_TIME      (3600)      // Cooldown time in seconds (1 hour)
+#define DUMPSTER_SEARCH_TIME        (7)         // Time to search dumpster in seconds
+#define DUMPSTER_COOLDOWN_TIME      (600)       // Cooldown time in seconds (10 minutes)
 #define DUMPSTER_DETECTION_RANGE    (5.5)      // Range to detect player near dumpster
 
 // Dumpster data enumeration
@@ -26,19 +26,19 @@ enum E_REWARD_DATA {
 
 // Dumpster rewards table
 static const RewardTable[][E_REWARD_DATA] = {
-    {0, 500,   "Cash",               15},    // 500 cash
-    {0, 1000,  "Cash",               12},    // 1000 cash
-    {0, 1500,  "Cash",               10},    // 1500 cash
-    {0, 2000,  "Cash",               8},     // 2000 cash
-    {0, 2500,  "Cash",               5},     // 2500 cash
+    {0, 1000,  "Cash",               15},    // 1000 cash
+    {0, 2000,  "Cash",               12},    // 2000 cash
+    {0, 3000,  "Cash",               10},    // 3000 cash
+    {0, 4000,  "Cash",               8},     // 4000 cash
+    {0, 5000,  "Cash",               5},     // 5000 cash
     {1, 24,    "Desert Eagle",       10},    // Deagle
     {1, 25,    "Shotgun",            8},     // Combat Shotgun
     {1, 22,    "Pistol",             15},    // 9mm Pistol
     {1, 16,    "Grenade",            7},     // Grenade
     {1, 18,    "Molotov",            4},     // Molotov Cocktail
-    {0, 3000,  "Cash",               3},     // 3000 cash (rare)
-    {0, 5000,  "Cash",               2},     // 5000 cash (very rare)
-    {1, 29,    "Micro SMG",          5}      // Micro SMG
+    {0, 7500,  "Cash",               3},     // 7500 cash (rare)
+    {0, 10000, "Cash",               2},     // 10000 cash (very rare)
+    {1, 29,    "Micro SMG",          1}      // Micro SMG
 };
 
 // Dumpster locations

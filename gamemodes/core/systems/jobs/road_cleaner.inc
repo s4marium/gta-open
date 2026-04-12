@@ -2,7 +2,7 @@
 
 const
 	ROAD_TRASH = 2672,
-	SWEEPER_REWARD = 230;
+	SWEEPER_REWARD = 500;
 
 // TODO:
 // - Make it 3D Array
@@ -45,7 +45,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 				vehicleid = GetPlayerVehicleID(playerid);
 			if(IsSweepVeh(vehicleid)) {
 				if(!PlayerStartedSweeping[playerid]) {
-					if(gettime() - SweeperCommandTick[playerid] < 180) {
+					if(gettime() - SweeperCommandTick[playerid] < 60) {
 						SendErrorMsgF(
 							playerid,
 							"Please wait %d seconds before starting sweeper side job again!",

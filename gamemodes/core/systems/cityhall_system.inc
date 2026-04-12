@@ -1,7 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
 const
-    CHANGE_SKILL_PRICE  = 15_000;
+    CHANGE_SKILL_PRICE  = 7_500;
 
 hook OnGameModeInit() {
     Create3DTextLabel("Press "C_YELLOW"~k~~CONVERSATION_YES~"C_WHITE" to change skill", COLOR_WHITE, 359.7139, 173.5916, 1009.3893, 40.0, 26, false);

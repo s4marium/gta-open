@@ -17,7 +17,7 @@
 // DEFINITIONS & CONSTANTS
 // =============================================================================
 
-#define MAX_XP_PER_LEVEL(%0) ((%0 + 5) * 200)
+#define MAX_XP_PER_LEVEL(%0) ((%0 + 3) * 150)
 #define XP_HIDE_TIMER 6000
 
 // =============================================================================
@@ -284,7 +284,7 @@ stock bool:ResetPlayerXp(playerid) {
 // TEST COMMAND
 // =============================================================================
 CMD:getlevel(playerid, params[]) {
-	GivePlayerXp(playerid, 50);
+	GivePlayerXp(playerid, 100);
 	new message[128];
 	format(message, sizeof(message), "Level: %d | XP: %d/%d",
 		GetPlayerLevel(playerid),

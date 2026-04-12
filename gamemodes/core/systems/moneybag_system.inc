@@ -530,8 +530,8 @@ static
 	bool:HasMoneyBagBeenFound = false,
 	MoneyBagPickupHandler = -1;
 
-#define MONEYBAG_MIN_PRIZE		(75_000)
-#define MONEYBAG_MAX_PRIZE		(150_000)
+#define MONEYBAG_MIN_PRIZE		(30_000)
+#define MONEYBAG_MAX_PRIZE		(75_000)
 
 #include <YSI_Coding\y_hooks>
 
@@ -583,8 +583,8 @@ hook OnPlayerPickUpDynPickup(playerid, pickupid) {
     return 1;
 }
 
-// 12 minutes.
-task OnMoneyBagUpdate[1000 * 60 * 12]() {
+// 8 minutes.
+task OnMoneyBagUpdate[1000 * 60 * 8]() {
     new
 		moneybaglocation[MAX_MAP_ZONE_NAME];
 

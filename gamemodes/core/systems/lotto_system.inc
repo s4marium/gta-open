@@ -1,9 +1,9 @@
-#define LOTTO_MAX_JACKPOT 		(25000) //+25, 000
-#define LOTTO_MIN_JACKPOT		(10000) //+10, 100
-#define LOTTO_START     		(50000) //50, 00 starting lotto price
+#define LOTTO_MAX_JACKPOT 		(15000) //+15, 000
+#define LOTTO_MIN_JACKPOT		(5000) //+5, 000
+#define LOTTO_START     		(25000) //25, 000 starting jackpot
 #define MAX_LOTTO_INPUT			(MAX_PLAYERS)
 
-#define TICKET_PRICE      		(1000)
+#define TICKET_PRICE      		(500)
 
 new
 	LottoJackpot = LOTTO_START,
@@ -32,14 +32,16 @@ hook OnPlayerConnect(playerid) {
 
 hook OnServerSecondUpdate() {
 
-    // only show the message every 2 minutes
-    if(gettime() - lottoLastTick < (60 * 2)) {
+    // only show the message every 72 seconds
+    if(gettime() - lottoLastTick < (72)) {
         // go to next hook.
         return 1;
     }
 
-    // draw every 10 minutes.
-    if(lottoDrawCounter == 5) {
+    lottoDrawCounter++;
+
+    // draw every ~6 minutes.
+    if(lottoDrawCounter >= 5) { // draws every ~6 minutes (5 * 72s)
         new
             genRandomNum = 10,//random(MAX_LOTTO_INPUT - 1) + 1,
             winnerID = INVALID_PLAYER_ID;
@@ -63,7 +65,7 @@ hook OnServerSecondUpdate() {
         if(winnerID != INVALID_PLAYER_ID) {
             MessageBox_ShowAllF(
                 TYPE_INFORMATION,
-                "~y~Lotto Informataion",
+                "~y~Lotto Information",
                 "~y~WINNER WINNER CHICKEN DINNER! ~p~%p ~w~won ~g~%m ~w~from the lottery!~n~\
                 ~w~Make sure you get a ticket for next draw ~p~/lotto [1 - %i]",
                 _,
@@ -99,13 +101,12 @@ hook OnServerSecondUpdate() {
     MessageBox_ShowAllF(
         TYPE_INFORMATION,
         "~y~Lotto Information",
-        "~w~Current lotto jackpoint is ~g~%m~n~\
+        "~w~Current lotto jackpot is ~g~%m~n~\
         ~w~use ~p~/lotto [1 - %i] ~w~to buy a ticket and get the chance to win the money!",
         _,
         LottoJackpot, MAX_LOTTO_INPUT
     );
     lottoLastTick = gettime();
-    lottoDrawCounter ++;
 	return 1;
 }
 
@@ -132,7 +133,7 @@ CMD:lotto(playerid, params[]) {
     }
 
     if(Bit_Get(PlayerBoughtTicket, playerid)) {
-    	return SendErrorMsg(playerid, "You already have a purchased a lotto ticket!");
+    	return SendErrorMsg(playerid, "You already have purchased a lotto ticket!");
     }
 
 
@@ -142,7 +143,7 @@ CMD:lotto(playerid, params[]) {
 
     GivePlayerMoney(playerid, -TICKET_PRICE); //Takes away the ticket cost.
 
-    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"You have bought a lottery ticket! Your lotto "C_GREY"#%i"C_WHITE", just wait for the next draw for reults!", lottoID);
-    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"Draws are held every "C_GREY"10 "C_WHITE"minutes and the winners are announced. The current jackpot is "C_GREEN"%m", LottoJackpot);
+    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"You have bought a lottery ticket! Your lotto "C_GREY"#%i"C_WHITE", just wait for the next draw for results!", lottoID);
+    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"Draws are held every "C_GREY"~6 "C_WHITE"minutes and the winners are announced. The current jackpot is "C_GREEN"%m", LottoJackpot);
     return 1;
 }

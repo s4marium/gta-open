@@ -1,13 +1,13 @@
 #include <YSI_Coding\y_hooks>
 
-const DEATH_TAX_PERCENTAGE = 4;
-const WEEKLY_TAX_PERCENTANGE = 10;
+const DEATH_TAX_PERCENTAGE = 2;
+const WEEKLY_TAX_PERCENTANGE = 5;
 
 hook OnPlayerDeathEx(playerid, killerid, reason) {
     new
         cashInHand = GetPlayerMoney(playerid) + Player_GetBankMoney(playerid);
 
-    if(cashInHand > 50_000) {
+    if(cashInHand > 100_000) {
         return 1;
     }
 
@@ -41,7 +41,7 @@ hook OnServerWeekReset() {
 
         cashInHand = GetPlayerMoney(playerid) + Player_GetBankMoney(playerid);
 
-        if(cashInHand > 50_000) {
+        if(cashInHand > 100_000) {
             continue;
         }
 

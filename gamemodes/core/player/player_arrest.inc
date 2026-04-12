@@ -7,8 +7,8 @@ new
 timer DelaySendToJail[1500 + GetPlayerPing(targetid)](targetid) {
     new
         wantedlevelsendj = GetPlayerWantedLevel(targetid), // I don't know but when you use level here it gets an preceding level error (investigate with YLess).
-        seconds = (wantedlevelsendj * 2);
-    Player_SetBailAmount(targetid, 5000);
+        seconds = (wantedlevelsendj * 1);
+    Player_SetBailAmount(targetid, 3000);
     Player_SendToJail(targetid, seconds, true);
     gPlayerGettingArrested[targetid] = false;
 }
@@ -20,8 +20,8 @@ hook OnPlayerDeathEx(playerid, killerid, reason)
             if(Player_GetWantedLevel(playerid) >= 10) {
                 foreach(new i : Player) {
                     if(Player_IsLEO(i)) {
-                        SendMsgF(playerid, COLOR_BLUE, "[POLICE TAKEDOWN]: %p (%d) has taken %p (%d) with brutal force", killerid, killerid, playerid, playerid);
-                        GivePlayerMoney(playerid, 5000);
+                        SendMsgF(i, COLOR_BLUE, "[POLICE TAKEDOWN]: %p (%d) has taken %p (%d) with brutal force", killerid, killerid, playerid, playerid);
+                        GivePlayerMoney(i, 7500);
                     }
                 }
             }
@@ -107,7 +107,7 @@ stock void:Player_AwardArrest(playerid, targetid, bool:notify = true) {
 
     new
         level =  GetPlayerWantedLevel(targetid),
-        money = level * 200;
+        money = level * 350;
     GivePlayerMoney(playerid, money);
     Player_GiveScore(playerid, 1, true);
     Player_RemoveScore(playerid, 1);

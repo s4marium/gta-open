@@ -14,10 +14,10 @@
 #define ORANGE_FARM_DEBUG true
 #define ORANGE_COLLECTION_TIME 1000
 #define ORANGE_PROCESSING_TIME 5000
-#define ORANGE_RESPAWN_TIME 30000
+#define ORANGE_RESPAWN_TIME 15000
 #define ORANGE_TO_JUICE_RATIO 5
-#define ORANGE_SALE_PRICE_JUICE 50
-#define ORANGE_COLLECTION_REWARD_MONEY 100
+#define ORANGE_SALE_PRICE_JUICE 100
+#define ORANGE_COLLECTION_REWARD_MONEY 300
 // ====== ORANGE FARM ENUMS ======
 enum E_ORANGE_STATE {
      bool:IsCollecting,
@@ -318,14 +318,14 @@ Orange_GetNearestTree(playerid) {
 
 // ====== MINI-GAME CALLBACKS ======
 public Orange_MiniGame_OnComplete(playerid, customData) {
-     new randomAmount = random(3) + 1; // 1-3 oranges
+     new randomAmount = random(5) + 2; // 2-6 oranges
      Player_GiveOranges(playerid, randomAmount);
      GivePlayerMoney(playerid, ORANGE_COLLECTION_REWARD_MONEY);
 
      RemovePlayerAttachedObject(playerid, 9);
 
      new labelText[128];
-     format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: 30s");
+     format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: %ds", ORANGE_RESPAWN_TIME / 1000);
      UpdateDynamic3DTextLabelText(OrangeTreeLabels[customData], COLOR_YELLOW, labelText);
 
      new msg[128];
@@ -333,7 +333,7 @@ public Orange_MiniGame_OnComplete(playerid, customData) {
      Notify_Send(playerid, msg, 3000);
 
      SetTimerEx("Orange_RespawnTree", ORANGE_RESPAWN_TIME, false, "i", customData);
-     TreeRespawnTime[customData] = 30;
+     TreeRespawnTime[customData] = (ORANGE_RESPAWN_TIME / 1000);
      if(TreeRespawnTimer[customData]) KillTimer(TreeRespawnTimer[customData]);
      TreeRespawnTimer[customData] = SetTimerEx("Orange_UpdateTreeTimer", 1000, true, "i", customData);
 
