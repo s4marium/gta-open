@@ -21,6 +21,10 @@
 
 # Running & Compiling
 
+    Running this gamemode might be a little tricky because we recently migrated to open.mp
+    take note that you need compiler 3.10.11 to compile this gamemode (sampctl has 3.10.10).
+    replace the compiler at sampctl's AppData with 3.10.11 which can be downloaded in open.mp's files and make the folder named `pawn` inside the `sampctl` folder to read only access so it won't be replaced with 3.10.10 again every time you compile.
+
 ## Step 1 — Compile the Gamemode
 
 ```bash
