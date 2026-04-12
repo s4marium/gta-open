@@ -84,7 +84,7 @@ mission_begin(playerid)
     }
     if(PlayerCallsDone[playerid] == 3) {
         GivePlayerMoney(playerid, 30000);
-        SendServerMsgF(playerid, "Completed a Police Mission Recieved 30k");
+        SendServerMsgF(playerid, "Completed a Police Mission Received 30k");
         Player_GiveScore(playerid, 1, true);
         mission_cancel(playerid);
         return -2;
