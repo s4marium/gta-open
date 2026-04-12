@@ -84,11 +84,11 @@ Create a file named **`mysql.ini`** in the **project root directory** (next to `
 ```ini
 hostname=localhost
 username=root
-pass=yourpassword
+password=yourpassword
 database=gtaopen
 ```
 
-> **Note:** If your MySQL server has no password, remove the `pass=` line entirely. This file is already in `.gitignore`.
+> **Note:** If your MySQL server has no password, remove the `password=` line entirely. This file is already in `.gitignore`.
 
 ---
 
