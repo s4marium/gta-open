@@ -45,7 +45,7 @@ hook OnGameModeInit() {
         return 1;
     }
 
-    #if defined SETUP_TABLE
+    #if SETUP_TABLE
         CallLocalFunction("OnMySQLSetupTable", "");
     #endif
 
