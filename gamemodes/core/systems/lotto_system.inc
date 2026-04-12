@@ -65,7 +65,7 @@ hook OnServerSecondUpdate() {
         if(winnerID != INVALID_PLAYER_ID) {
             MessageBox_ShowAllF(
                 TYPE_INFORMATION,
-                "~y~Lotto Informataion",
+                "~y~Lotto Information",
                 "~y~WINNER WINNER CHICKEN DINNER! ~p~%p ~w~won ~g~%m ~w~from the lottery!~n~\
                 ~w~Make sure you get a ticket for next draw ~p~/lotto [1 - %i]",
                 _,
@@ -101,7 +101,7 @@ hook OnServerSecondUpdate() {
     MessageBox_ShowAllF(
         TYPE_INFORMATION,
         "~y~Lotto Information",
-        "~w~Current lotto jackpoint is ~g~%m~n~\
+        "~w~Current lotto jackpot is ~g~%m~n~\
         ~w~use ~p~/lotto [1 - %i] ~w~to buy a ticket and get the chance to win the money!",
         _,
         LottoJackpot, MAX_LOTTO_INPUT
@@ -133,7 +133,7 @@ CMD:lotto(playerid, params[]) {
     }
 
     if(Bit_Get(PlayerBoughtTicket, playerid)) {
-    	return SendErrorMsg(playerid, "You already have a purchased a lotto ticket!");
+    	return SendErrorMsg(playerid, "You already have purchased a lotto ticket!");
     }
 
 
@@ -143,7 +143,7 @@ CMD:lotto(playerid, params[]) {
 
     GivePlayerMoney(playerid, -TICKET_PRICE); //Takes away the ticket cost.
 
-    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"You have bought a lottery ticket! Your lotto "C_GREY"#%i"C_WHITE", just wait for the next draw for reults!", lottoID);
+    SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"You have bought a lottery ticket! Your lotto "C_GREY"#%i"C_WHITE", just wait for the next draw for results!", lottoID);
     SendMsgF(playerid, COLOR_YELLOW, "** LOTTO ** "C_WHITE"Draws are held every "C_GREY"~6 "C_WHITE"minutes and the winners are announced. The current jackpot is "C_GREEN"%m", LottoJackpot);
     return 1;
 }
