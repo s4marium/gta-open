@@ -38,8 +38,10 @@ hook OnServerSecondUpdate() {
         return 1;
     }
 
+    lottoDrawCounter++;
+
     // draw every ~6 minutes.
-    if(lottoDrawCounter == 5) { // draws every ~6 minutes (5 * 72s)
+    if(lottoDrawCounter >= 5) { // draws every ~6 minutes (5 * 72s)
         new
             genRandomNum = 10,//random(MAX_LOTTO_INPUT - 1) + 1,
             winnerID = INVALID_PLAYER_ID;
@@ -105,7 +107,6 @@ hook OnServerSecondUpdate() {
         LottoJackpot, MAX_LOTTO_INPUT
     );
     lottoLastTick = gettime();
-    lottoDrawCounter ++;
 	return 1;
 }
 
