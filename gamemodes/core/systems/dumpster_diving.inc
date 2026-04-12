@@ -38,7 +38,7 @@ static const RewardTable[][E_REWARD_DATA] = {
     {1, 18,    "Molotov",            4},     // Molotov Cocktail
     {0, 7500,  "Cash",               3},     // 7500 cash (rare)
     {0, 10000, "Cash",               2},     // 10000 cash (very rare)
-    {1, 29,    "Micro SMG",          5}      // Micro SMG
+    {1, 29,    "Micro SMG",          1}      // Micro SMG
 };
 
 // Dumpster locations
