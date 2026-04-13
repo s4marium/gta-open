@@ -63,21 +63,21 @@ ALTCMD:cmds(commands);
 CMD:commands(playerid, params[]) {
 
     inline _response(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused dialogid, pid, inputtext
+        #pragma unused dialogid, inputtext
         if (!response) {
             return 0;
         }
 
         switch(listitem) {
-            case 0: _HelpMenu_General(playerid);
-            case 1: _HelpMenu_LawEnforcement(playerid);
-            case 2: _HelpMenu_Jobs(playerid);
-            case 3: _HelpMenu_Criminal(playerid);
-            case 4: _HelpMenu_SideJobs(playerid);
-            case 5: _HelpMenu_House(playerid);
-            case 6: _HelpMenu_Gang(playerid);
-            case 7: _HelpMenu_Attachment(playerid);
-            case 8: _HelpMenu_Animations(playerid);
+            case 0: _HelpMenu_General(pid);
+            case 1: _HelpMenu_LawEnforcement(pid);
+            case 2: _HelpMenu_Jobs(pid);
+            case 3: _HelpMenu_Criminal(pid);
+            case 4: _HelpMenu_SideJobs(pid);
+            case 5: _HelpMenu_House(pid);
+            case 6: _HelpMenu_Gang(pid);
+            case 7: _HelpMenu_Attachment(pid);
+            case 8: _HelpMenu_Animations(pid);
         }
     }
     Dialog_ShowCallback(
@@ -127,8 +127,8 @@ static _HelpMenu_General(playerid) {
         "C_GREY"/surrender "C_WHITE"- Put your hands up.\n");
 
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"General & Communication", string, "Back", "");
     return 1;
@@ -157,8 +157,8 @@ static _HelpMenu_LawEnforcement(playerid) {
         "C_GREY"/mission "C_WHITE"- Start a police patrol mission (at LSPD).\n");
 
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Law Enforcement Commands", string, "Back", "");
     return 1;
@@ -171,19 +171,19 @@ static _HelpMenu_LawEnforcement(playerid) {
 static _HelpMenu_Jobs(playerid) {
 
     inline _response(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused dialogid, pid, inputtext
+        #pragma unused dialogid, inputtext
         if (!response) {
             // Go back to main help menu
-            cmd_commands(playerid, "");
+            cmd_commands(pid, "");
             return 0;
         }
         switch(listitem) {
-            case 0: _HelpMenu_Job_DrugDealer(playerid);
-            case 1: _HelpMenu_Job_WeaponDealer(playerid);
-            case 2: _HelpMenu_Job_Hitman(playerid);
-            case 3: _HelpMenu_Job_Terrorist(playerid);
-            case 4: _HelpMenu_Job_Rapist(playerid);
-            case 5: _HelpMenu_Job_Mechanic(playerid);
+            case 0: _HelpMenu_Job_DrugDealer(pid);
+            case 1: _HelpMenu_Job_WeaponDealer(pid);
+            case 2: _HelpMenu_Job_Hitman(pid);
+            case 3: _HelpMenu_Job_Terrorist(pid);
+            case 4: _HelpMenu_Job_Rapist(pid);
+            case 5: _HelpMenu_Job_Mechanic(pid);
         }
     }
 
@@ -206,8 +206,8 @@ static _HelpMenu_Jobs(playerid) {
 
 static _HelpMenu_Job_DrugDealer(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Drug Dealer Commands",
@@ -223,8 +223,8 @@ static _HelpMenu_Job_DrugDealer(playerid) {
 
 static _HelpMenu_Job_WeaponDealer(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Weapon Dealer Commands",
@@ -243,8 +243,8 @@ static _HelpMenu_Job_WeaponDealer(playerid) {
 
 static _HelpMenu_Job_Hitman(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Hitman Commands",
@@ -258,8 +258,8 @@ static _HelpMenu_Job_Hitman(playerid) {
 
 static _HelpMenu_Job_Terrorist(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Terrorist Commands",
@@ -274,8 +274,8 @@ static _HelpMenu_Job_Terrorist(playerid) {
 
 static _HelpMenu_Job_Rapist(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Rapist Commands",
@@ -288,8 +288,8 @@ static _HelpMenu_Job_Rapist(playerid) {
 
 static _HelpMenu_Job_Mechanic(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        _HelpMenu_Jobs(playerid);
+        #pragma unused dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(pid);
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Mechanic Commands",
@@ -323,8 +323,8 @@ static _HelpMenu_Criminal(playerid) {
         "C_WHITE"- Car Crusher in Willowfield pays for wanted vehicles.\n");
 
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Criminal Activities", string, "Back", "");
     return 1;
@@ -359,8 +359,8 @@ static _HelpMenu_SideJobs(playerid) {
         "C_WHITE"- Car Crusher: sell wanted vehicles in Willowfield.\n");
 
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Side Jobs & Activities", string, "Back", "");
     return 1;
@@ -386,8 +386,8 @@ static _HelpMenu_House(playerid) {
         "C_WHITE"~k~~CONVERSATION_NO~ - Open furniture menu (inside house).\n");
 
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"House Commands", string, "Back", "");
     return 1;
@@ -399,8 +399,8 @@ static _HelpMenu_House(playerid) {
 
 static _HelpMenu_Gang(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Gang Commands",
@@ -421,8 +421,8 @@ static _HelpMenu_Gang(playerid) {
 
 static _HelpMenu_Attachment(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Attachments & Furniture",
@@ -446,8 +446,8 @@ static _HelpMenu_Attachment(playerid) {
 
 static _HelpMenu_Animations(playerid) {
     inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        cmd_commands(playerid, "");
+        #pragma unused dialogid, response, listitem, inputtext
+        cmd_commands(pid, "");
     }
     Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Animations",
