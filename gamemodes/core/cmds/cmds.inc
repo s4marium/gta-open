@@ -126,7 +126,11 @@ static _HelpMenu_General(playerid) {
         "C_GREY"/animlist "C_WHITE"- List all available animations.\n\
         "C_GREY"/surrender "C_WHITE"- Put your hands up.\n");
 
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, ""C_ORANGE"General & Communication", string, "Back", "");
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"General & Communication", string, "Back", "");
     return 1;
 }
 
@@ -152,7 +156,11 @@ static _HelpMenu_LawEnforcement(playerid) {
     strcat(string, ""C_ORANGE"Police Mission\n\
         "C_GREY"/mission "C_WHITE"- Start a police patrol mission (at LSPD).\n");
 
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Law Enforcement Commands", string, "Back", "");
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Law Enforcement Commands", string, "Back", "");
     return 1;
 }
 
@@ -197,7 +205,11 @@ static _HelpMenu_Jobs(playerid) {
 }
 
 static _HelpMenu_Job_DrugDealer(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Drug Dealer Commands",
         ""C_GREY"/plantweed "C_WHITE"- Plant a weed seed.\n\
         "C_GREY"/harvestweed "C_WHITE"- Harvest your planted weed.\n\
@@ -210,7 +222,11 @@ static _HelpMenu_Job_DrugDealer(playerid) {
 }
 
 static _HelpMenu_Job_WeaponDealer(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Weapon Dealer Commands",
         ""C_GREY"/sellgun <id> <weaponid> <price> <ammo> "C_WHITE"- Offer a weapon.\n\
         "C_GREY"/acceptgun "C_WHITE"- Accept a weapon offer.\n\
@@ -226,7 +242,11 @@ static _HelpMenu_Job_WeaponDealer(playerid) {
 }
 
 static _HelpMenu_Job_Hitman(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Hitman Commands",
         ""C_GREY"/hitlist "C_WHITE"- View players with active bounties.\n\
         "C_GREY"/placehit <id> <amount> "C_WHITE"- Place a hit on a player.\n\n\
@@ -237,7 +257,11 @@ static _HelpMenu_Job_Hitman(playerid) {
 }
 
 static _HelpMenu_Job_Terrorist(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Terrorist Commands",
         ""C_GREY"/plantc4 "C_WHITE"- Plant a C4 explosive.\n\
         "C_GREY"/detonate "C_WHITE"- Detonate your planted C4.\n\n\
@@ -249,7 +273,11 @@ static _HelpMenu_Job_Terrorist(playerid) {
 }
 
 static _HelpMenu_Job_Rapist(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Rapist Commands",
         ""C_GREY"/rape <id> "C_WHITE"- Infect a nearby player.\n\n\
         "C_ORANGE"Note: "C_WHITE"Change job at City Hall ($7,500).",
@@ -259,7 +287,11 @@ static _HelpMenu_Job_Rapist(playerid) {
 }
 
 static _HelpMenu_Job_Mechanic(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        _HelpMenu_Jobs(playerid);
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Mechanic Commands",
         ""C_GREY"/mechfix "C_WHITE"- Fix the vehicle you are currently in.\n\n\
         "C_ORANGE"Note: "C_WHITE"Change job at City Hall ($7,500).",
@@ -290,7 +322,11 @@ static _HelpMenu_Criminal(playerid) {
         "C_WHITE"- C4 can be used to breach jail cells.\n\
         "C_WHITE"- Car Crusher in Willowfield pays for wanted vehicles.\n");
 
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Criminal Activities", string, "Back", "");
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Criminal Activities", string, "Back", "");
     return 1;
 }
 
@@ -322,7 +358,11 @@ static _HelpMenu_SideJobs(playerid) {
         "C_WHITE"- Dumpster Diving: search dumpsters around the map.\n\
         "C_WHITE"- Car Crusher: sell wanted vehicles in Willowfield.\n");
 
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Side Jobs & Activities", string, "Back", "");
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"Side Jobs & Activities", string, "Back", "");
     return 1;
 }
 
@@ -345,7 +385,11 @@ static _HelpMenu_House(playerid) {
         "C_WHITE"~k~~VEHICLE_ENTER_EXIT~ - Enter/exit house.\n\
         "C_WHITE"~k~~CONVERSATION_NO~ - Open furniture menu (inside house).\n");
 
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, ""C_ORANGE"House Commands", string, "Back", "");
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX, ""C_ORANGE"House Commands", string, "Back", "");
     return 1;
 }
 
@@ -354,7 +398,11 @@ static _HelpMenu_House(playerid) {
 // ---------------------------------------------------------------------------
 
 static _HelpMenu_Gang(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Gang Commands",
         ""C_GREY"/gangs "C_WHITE"- View all active gangs.\n\
         "C_GREY"/gang create <name> "C_WHITE"- Create a new gang.\n\
@@ -372,7 +420,11 @@ static _HelpMenu_Gang(playerid) {
 // ---------------------------------------------------------------------------
 
 static _HelpMenu_Attachment(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Attachments & Furniture",
         ""C_ORANGE"Attachments\n\
         "C_GREY"/attachment buy "C_WHITE"- Purchase an attachment.\n\
@@ -393,7 +445,11 @@ static _HelpMenu_Attachment(playerid) {
 // ---------------------------------------------------------------------------
 
 static _HelpMenu_Animations(playerid) {
-    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX,
+    inline _back(pid, dialogid, response, listitem, string:inputtext[]) {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        cmd_commands(playerid, "");
+    }
+    Dialog_ShowCallback(playerid, using inline _back, DIALOG_STYLE_MSGBOX,
         ""C_ORANGE"Animations",
         ""C_GREY"/animlist "C_WHITE"- View full list of all animation commands.\n\n\
         "C_ORANGE"Quick Reference\n\
