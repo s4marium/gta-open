@@ -29,7 +29,6 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
             return;
         }
 
-        printf("hash %s", playerHash);
         bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash, "s", playerHash);
     }
 
@@ -98,9 +97,7 @@ public OnPasswordVerify(playerid, bool:success, string:hash[]) {
             return;
         }
 
-        printf("password wrong before hash: %s", hash);
         Account_PromptLogin(playerid, hash, BCRYPT_HASH_LENGTH);
-        printf("password wrong before hash: %s", hash);
 
         SendErrorMsg(playerid, "Oops something went wrong, try again.");
 
