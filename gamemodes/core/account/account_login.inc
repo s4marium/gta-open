@@ -16,6 +16,12 @@ hook OnPlayerConnect(playerid) {
 
 // Global
 void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
+    new
+        playerHash[62];
+    // copy to local stack
+    // fix with y_inline scopes.
+    strcpy(playerHash, hash, len);
+
     inline const PromptLoginResponse(response, listitem, string:inputtext[]) {
          #pragma unused listitem
 
@@ -25,7 +31,7 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
             return;
         }
 
-        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, hash);
+        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash);
     }
 
     new
