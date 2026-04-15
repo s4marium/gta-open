@@ -31,6 +31,7 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
             return;
         }
 
+        printf("hash %s", playerHash);
         bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash);
     }
 
@@ -101,7 +102,9 @@ public OnPasswordVerify(playerid, bool:success) {
             return;
         }
 
+        printf("password wrong before hash: %s", gPlayerHash[playerid]);
         Account_PromptLogin(playerid, gPlayerHash[playerid]);
+        printf("password wrong after hash: %s", gPlayerHash[playerid]);
 
         SendErrorMsg(playerid, "Oops something went wrong, try again.");
 
