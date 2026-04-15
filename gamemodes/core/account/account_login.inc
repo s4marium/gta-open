@@ -88,7 +88,7 @@ public OnPasswordVerify(playerid, bool:success) {
             SendErrorMsg(playerid, "You have been kicked from the server for attempting to login numerous times.");
             Kick(playerid);
 
-            dbg("player", "player has been kicked for too many login attempts",
+            Logger_Dbg("player", "player has been kicked for too many login attempts",
                 _p("username", playerid),
                 _i("uid", Player_GetAccountID(playerid))
             );
@@ -98,7 +98,7 @@ public OnPasswordVerify(playerid, bool:success) {
         Account_PromptLogin(playerid, gPlayerHash[playerid]);
         SendErrorMsgF(playerid, "Wrong password, try again! - Attempts: [%i/%i]", PlayerAttempts[playerid], MAX_PASSWORD_ATTEMPT);
 
-        dbg("player", "player failed to login",
+        Logger_Dbg("player", "player failed to login",
             _i("attemps", PlayerAttempts[playerid]),
             _p("username", playerid),
             _i("uid", Player_GetAccountID(playerid))
@@ -106,7 +106,7 @@ public OnPasswordVerify(playerid, bool:success) {
         return;
     }
 
-    dbg("player", "player successfully logged in",
+    Logger_Dbg("player", "player successfully logged in",
         _p("username", playerid),
         _i("uid", Player_GetAccountID(playerid))
     );
@@ -114,19 +114,8 @@ public OnPasswordVerify(playerid, bool:success) {
     PlayerAttempts[playerid] = 0;
     Account_NotifySuccess(playerid);
     CallLocalFunction("OnPlayerLogin", "i", playerid); // Used in other modules to load other data.
-
-    // Force Spawn Player
-    SetSpawnInfo(playerid, NO_TEAM, Player_GetSavedSkin(playerid), 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0);
-    SpawnPlayer(playerid);
 }
 
-static
-    Statement: stmt_updatePlayerSkin;
-
-hook OnMySQLConnected() {
-    stmt_updatePlayerSkin = MySQL_PrepareStatement(MySQL_GetHandle(), "UPDATE player_stats SET skin = ? WHERE u_id = ?");
-    return 1;
-}
 
 hook OnPlayeLogin(playerid) {
     gPlayerLoginStatus[playerid] = true;
