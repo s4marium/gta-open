@@ -61,7 +61,7 @@ static Account_Create(playerid, const password[]) {
         return;
     }
 
-    bcrypt_hash(playerid, "OnPassswordHash", password, BCRYPT_COST);
+    bcrypt_hash(playerid, "OnPasswordHash", password, BCRYPT_COST);
 }
 
 // only used internally, when all checks passed this function will be called.
@@ -93,8 +93,8 @@ static Account_InsertToDatabase(playerid, const hash[]) {
     MySQL_ExecuteThreaded_Inline(stmt_insertPlayerAccount, using inline OnRegister);
 }
 
-forward OnPassswordHash(playerid);
-public OnPassswordHash(playerid) {
+forward OnPasswordHash(playerid);
+public OnPasswordHash(playerid) {
     new hash[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(hash);
     Account_InsertToDatabase(playerid, hash);
