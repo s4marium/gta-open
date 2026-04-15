@@ -16,10 +16,6 @@ hook OnPlayerConnect(playerid) {
 
 // Global
 void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
-    // copy to local stack
-    // fix with y_inline scopes.
-    strcpy(gPlayerHash[playerid], hash, len);
-
     inline const PromptLoginResponse(response, listitem, string:inputtext[]) {
          #pragma unused listitem
 
@@ -29,7 +25,7 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
             return;
         }
 
-        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, gPlayerHash[playerid]);
+        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, hash);
     }
 
     new
@@ -72,6 +68,9 @@ static void:Account_NotifySuccess(playerid) {
 
 
 hook OnPlayerLogin(playerid) {
+
+    gPlayerHash[playerid][0] = EOS;
+
     new
         Statement: stmt_updatePlayerLastLogin;
 
