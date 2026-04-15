@@ -76,6 +76,7 @@ static void:Account_NotifySuccess(playerid) {
 hook OnPlayerLogin(playerid) {
 
     gPlayerHash[playerid][0] = EOS;
+    gPlayerLoginStatus[playerid] = true;
 
     new
         Statement: stmt_updatePlayerLastLogin;
@@ -121,13 +122,6 @@ public OnPasswordVerify(playerid, bool:success) {
     Account_NotifySuccess(playerid);
     CallLocalFunction("OnPlayerLogin", "i", playerid); // Used in other modules to load other data.
 }
-
-
-hook OnPlayeLogin(playerid) {
-    gPlayerLoginStatus[playerid] = true;
-    return 1;
-}
-
 
  // API
 Player_IsLoggedIn(playerid) {
