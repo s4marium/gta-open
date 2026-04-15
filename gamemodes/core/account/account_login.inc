@@ -89,8 +89,8 @@ public OnPasswordVerify(playerid, bool:success) {
             Kick(playerid);
 
             Logger_Dbg("player", "player has been kicked for too many login attempts",
-                _p("username", playerid),
-                _i("uid", Player_GetAccountID(playerid))
+                Logger_P("username", playerid),
+                Logger_I("uid", Player_GetAccountID(playerid))
             );
             return;
         }
@@ -99,9 +99,9 @@ public OnPasswordVerify(playerid, bool:success) {
         SendErrorMsgF(playerid, "Wrong password, try again! - Attempts: [%i/%i]", PlayerAttempts[playerid], MAX_PASSWORD_ATTEMPT);
 
         Logger_Dbg("player", "player failed to login",
-            _i("attemps", PlayerAttempts[playerid]),
-            _p("username", playerid),
-            _i("uid", Player_GetAccountID(playerid))
+            Logger_I("attemps", PlayerAttempts[playerid]),
+            Logger_P("username", playerid),
+            Logger_I("uid", Player_GetAccountID(playerid))
         );
         return;
     }
