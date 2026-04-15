@@ -88,27 +88,28 @@ public OnPasswordVerify(playerid, bool:success) {
             SendErrorMsg(playerid, "You have been kicked from the server for attempting to login numerous times.");
             Kick(playerid);
 
-            Logger_Dbg("player", "player has been kicked for too many login attempts",
-                Logger_P("username", playerid),
+            Logger_Dbg(PLAYER_DEBUG_HANDLER, "player has been kicked for too many login attempts",
+                Logger_P(playerid),
                 Logger_I("uid", Player_GetAccountID(playerid))
             );
             return;
         }
 
         Account_PromptLogin(playerid, gPlayerHash[playerid]);
-        SendErrorMsgF(playerid, "Wrong password, try again! - Attempts: [%i/%i]", PlayerAttempts[playerid], MAX_PASSWORD_ATTEMPT);
 
-        Logger_Dbg("player", "player failed to login",
+        SendErrorMsg(playerid, "Oops something went wrong, try again.");
+
+        Logger_Dbg(PLAYER_DEBUG_HANDLER, "player failed to login",
             Logger_I("attemps", PlayerAttempts[playerid]),
-            Logger_P("username", playerid),
+            Logger_P(playerid),
             Logger_I("uid", Player_GetAccountID(playerid))
         );
         return;
     }
 
-    Logger_Dbg("player", "player successfully logged in",
-        _p("username", playerid),
-        _i("uid", Player_GetAccountID(playerid))
+    Logger_Dbg(PLAYER_DEBUG_HANDLER, "player successfully logged in",
+        Logger_P(playerid),
+        Logger_I("uid", Player_GetAccountID(playerid))
     );
 
     PlayerAttempts[playerid] = 0;
