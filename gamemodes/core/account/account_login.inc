@@ -102,7 +102,7 @@ public OnPasswordVerify(playerid, bool:success, string:hash[]) {
         SendErrorMsg(playerid, "Oops something went wrong, try again.");
 
         Logger_Dbg(PLAYER_DEBUG_HANDLER, "player failed to login",
-            Logger_I("attemps", PlayerAttempts[playerid]),
+            Logger_I("attempts", PlayerAttempts[playerid]),
             Logger_P(playerid),
             Logger_I("uid", Player_GetAccountID(playerid))
         );
