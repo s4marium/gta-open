@@ -9,13 +9,14 @@ static
 // Initialise
 hook OnPlayerConnect(playerid) {
     gPlayerLoginStatus[playerid] = false;
+    PlayerAttempts[playerid] = 0;
     return 1;
 }
 
 // Global
 void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
     new
-        playerHash[62];
+        playerHash[BCRYPT_HASH_LENGTH];
     // copy to local stack
     // fix with y_inline scopes.
     strcpy(playerHash, hash, len);
@@ -29,41 +30,7 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
             return;
         }
 
-        inline const OnPasswordVerify(bool: success) {
-            if(!success) {
-                PlayerAttempts[playerid] ++;
-                if(PlayerAttempts[playerid] >= MAX_PASSWORD_ATTEMPT) {
-                    SendErrorMsg(playerid, "You have been kicked from the server for attempting to login numerous times.");
-                    Kick(playerid);
-
-                    Logger_Dbg(PLAYER_DEBUG_HANDLER, "player has been kicked for too many login attempts",
-                        Logger_P(playerid),
-                        Logger_I("uid", Player_GetAccountID(playerid))
-                    );
-                    return;
-                }
-
-                Account_PromptLogin(playerid, playerHash);
-                SendErrorMsg(playerid, "Oops something went wrong, try again.");
-
-                Logger_Dbg(PLAYER_DEBUG_HANDLER, "player failed to login",
-                    Logger_I("attemps", PlayerAttempts[playerid]),
-                    Logger_P(playerid),
-                    Logger_I("uid", Player_GetAccountID(playerid))
-                );
-                return;
-            }
-
-            Logger_Dbg(PLAYER_DEBUG_HANDLER, "player successfully logged in",
-                Logger_P(playerid),
-                Logger_I("uid", Player_GetAccountID(playerid))
-            );
-
-            PlayerAttempts[playerid] = 0;
-            Account_NotifySuccess(playerid);
-            CallLocalFunction("OnPlayerLogin", "i", playerid); // Used in other modules to load other data.
-        }
-        BCrypt_CheckInline(inputtext, playerHash, using inline OnPasswordVerify);
+        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash, "s", playerHash);
     }
 
     new
@@ -106,17 +73,52 @@ static void:Account_NotifySuccess(playerid) {
 
 
 hook OnPlayerLogin(playerid) {
+    gPlayerLoginStatus[playerid] = true;
+
     new
         Statement: stmt_updatePlayerLastLogin;
 
     stmt_updatePlayerLastLogin = MySQL_PrepareStatement(MySQL_GetHandle(), "UPDATE players SET last_login = CURRENT_TIMESTAMP() WHERE u_id = ?");
     MySQL_BindInt(stmt_updatePlayerLastLogin, 0, Player_GetAccountID(playerid));
     MySQL_ExecuteThreaded(stmt_updatePlayerLastLogin);
-
-    gPlayerLoginStatus[playerid] = true;
-    return 1;
 }
 
+forward OnPasswordVerify(playerid, bool:success, string:hash[]);
+public OnPasswordVerify(playerid, bool:success, string:hash[]) {
+    if(!success) {
+        PlayerAttempts[playerid] ++;
+        if(PlayerAttempts[playerid] >= MAX_PASSWORD_ATTEMPT) {
+            SendErrorMsg(playerid, "You have been kicked from the server for attempting to login numerous times.");
+            Kick(playerid);
+
+            Logger_Dbg(PLAYER_DEBUG_HANDLER, "player has been kicked for too many login attempts",
+                Logger_P(playerid),
+                Logger_I("uid", Player_GetAccountID(playerid))
+            );
+            return;
+        }
+
+        Account_PromptLogin(playerid, hash, BCRYPT_HASH_LENGTH);
+
+        SendErrorMsg(playerid, "Oops something went wrong, try again.");
+
+        Logger_Dbg(PLAYER_DEBUG_HANDLER, "player failed to login",
+            Logger_I("attempts", PlayerAttempts[playerid]),
+            Logger_P(playerid),
+            Logger_I("uid", Player_GetAccountID(playerid))
+        );
+        return;
+    }
+
+    Logger_Dbg(PLAYER_DEBUG_HANDLER, "player successfully logged in",
+        Logger_P(playerid),
+        Logger_I("uid", Player_GetAccountID(playerid))
+    );
+
+    PlayerAttempts[playerid] = 0;
+    Account_NotifySuccess(playerid);
+    CallLocalFunction("OnPlayerLogin", "i", playerid); // Used in other modules to load other data.
+}
 
  // API
 Player_IsLoggedIn(playerid) {

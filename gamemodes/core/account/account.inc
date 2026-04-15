@@ -41,7 +41,7 @@ hook OnPlayerPassedBanCheck(playerid) {
     inline const OnDataLoad() {
         new
             playerUID,
-            playerHash[62];
+            playerHash[BCRYPT_HASH_LENGTH];
 
         MySQL_BindResultInt(stmt_checkPlayer, 0, playerUID);
         MySQL_BindResult(stmt_checkPlayer, 1, playerHash, sizeof(playerHash));

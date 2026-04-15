@@ -18,7 +18,7 @@
 		"samp-incognito/samp-streamer-plugin:v2.9.4",
 		"kristoisberg/samp-map-zones",
 		"s4marium/samp-ini:1.1.1",
-		"Sreyas-Sreelal/samp-bcrypt:0.2.3"
+		"Sreyas-Sreelal/samp-bcrypt:0.4.1"
 	],
 	"local": true,
 	"runtime": {
