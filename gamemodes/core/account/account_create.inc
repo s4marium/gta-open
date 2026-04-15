@@ -99,11 +99,3 @@ public OnPassswordHash(playerid) {
     bcrypt_get_hash(hash);
     Account_InsertToDatabase(playerid, hash);
 }
-
-stock Player_New(playerid) {
-    return PlayerFirstTime[playerid];
-}
-
-stock Player_SetNew(playerid, bool:status) {
-    PlayerFirstTime[playerid] = status;
-}
