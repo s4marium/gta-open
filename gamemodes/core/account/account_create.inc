@@ -95,7 +95,7 @@ static Account_InsertToDatabase(playerid, const hash[]) {
 
 forward OnPassswordHash(playerid);
 public OnPassswordHash(playerid) {
-    new hash[250];
+    new hash[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(hash);
     Account_InsertToDatabase(playerid, hash);
 }
