@@ -83,8 +83,8 @@ hook OnPlayerLogin(playerid) {
     MySQL_ExecuteThreaded(stmt_updatePlayerLastLogin);
 }
 
-forward OnPasswordVerify(playerid, bool:success, hash);
-public OnPasswordVerify(playerid, bool:success, hash) {
+forward OnPasswordVerify(playerid, bool:success, string:hash[]);
+public OnPasswordVerify(playerid, bool:success, string:hash[]) {
     if(!success) {
         PlayerAttempts[playerid] ++;
         if(PlayerAttempts[playerid] >= MAX_PASSWORD_ATTEMPT) {
@@ -99,7 +99,7 @@ public OnPasswordVerify(playerid, bool:success, hash) {
         }
 
         printf("password wrong before hash: %s", hash);
-        Account_PromptLogin(playerid, hash);
+        Account_PromptLogin(playerid, hash, BCRYPT_HASH_LENGTH);
         printf("password wrong before hash: %s", hash);
 
         SendErrorMsg(playerid, "Oops something went wrong, try again.");
