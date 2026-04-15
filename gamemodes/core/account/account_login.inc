@@ -2,7 +2,7 @@
 
 static
     bool:gPlayerLoginStatus[MAX_PLAYERS],
-    gPlayerHash[MAX_PLAYERS][62],
+    gPlayerHash[MAX_PLAYERS][BCRYPT_HASH_LENGTH],
     PlayerAttempts[MAX_PLAYERS];
 
 #define MAX_PASSWORD_ATTEMPT (5)
@@ -17,7 +17,7 @@ hook OnPlayerConnect(playerid) {
 // Global
 void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
     new
-        playerHash[62];
+        playerHash[BCRYPT_HASH_LENGTH];
     // copy to local stack
     // fix with y_inline scopes.
     strcpy(playerHash, hash, len);
