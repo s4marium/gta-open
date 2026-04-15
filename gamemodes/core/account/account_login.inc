@@ -9,6 +9,7 @@ static
 // Initialise
 hook OnPlayerConnect(playerid) {
     gPlayerLoginStatus[playerid] = false;
+    PlayerAttempts[playerid] = 0;
     return 1;
 }
 
