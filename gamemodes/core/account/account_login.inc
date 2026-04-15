@@ -2,7 +2,6 @@
 
 static
     bool:gPlayerLoginStatus[MAX_PLAYERS],
-    gPlayerHash[MAX_PLAYERS][BCRYPT_HASH_LENGTH],
     PlayerAttempts[MAX_PLAYERS];
 
 #define MAX_PASSWORD_ATTEMPT (5)
@@ -10,7 +9,6 @@ static
 // Initialise
 hook OnPlayerConnect(playerid) {
     gPlayerLoginStatus[playerid] = false;
-    gPlayerHash[playerid][0] = EOS;
     return 1;
 }
 
@@ -32,7 +30,7 @@ void:Account_PromptLogin(playerid, const hash[], len = sizeof(hash)) {
         }
 
         printf("hash %s", playerHash);
-        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash);
+        bcrypt_verify(playerid, "OnPasswordVerify", inputtext, playerHash, "s", playerHash);
     }
 
     new
@@ -75,8 +73,6 @@ static void:Account_NotifySuccess(playerid) {
 
 
 hook OnPlayerLogin(playerid) {
-
-    gPlayerHash[playerid][0] = EOS;
     gPlayerLoginStatus[playerid] = true;
 
     new
@@ -87,8 +83,8 @@ hook OnPlayerLogin(playerid) {
     MySQL_ExecuteThreaded(stmt_updatePlayerLastLogin);
 }
 
-forward OnPasswordVerify(playerid, bool:success);
-public OnPasswordVerify(playerid, bool:success) {
+forward OnPasswordVerify(playerid, bool:success, hash);
+public OnPasswordVerify(playerid, bool:success, hash) {
     if(!success) {
         PlayerAttempts[playerid] ++;
         if(PlayerAttempts[playerid] >= MAX_PASSWORD_ATTEMPT) {
@@ -102,9 +98,9 @@ public OnPasswordVerify(playerid, bool:success) {
             return;
         }
 
-        printf("password wrong before hash: %s", gPlayerHash[playerid]);
-        Account_PromptLogin(playerid, gPlayerHash[playerid]);
-        printf("password wrong after hash: %s", gPlayerHash[playerid]);
+        printf("password wrong before hash: %s", hash);
+        Account_PromptLogin(playerid, hash);
+        printf("password wrong before hash: %s", hash);
 
         SendErrorMsg(playerid, "Oops something went wrong, try again.");
 
