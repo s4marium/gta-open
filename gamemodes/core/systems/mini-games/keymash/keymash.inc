@@ -219,27 +219,26 @@ public Keymash_End(playerid, bool:success) {
     TogglePlayerControllable(playerid, true);
     ClearAnimations(playerid, true);
 
-    // Call appropriate callback based on type
+    // Call appropriate callback based on type using CallLocalFunction
     if(success) {
         if(type == KEYMASH_TYPE_HARVEST) {
-            Orange_MiniGame_OnComplete(playerid, customData);
             CallLocalFunction("Orange_MiniGame_OnComplete", "ii", playerid, customData);
         } else if(type == KEYMASH_TYPE_COLLECTION || type == KEYMASH_TYPE_MINING || type == KEYMASH_TYPE_FISHING) {
-            //Fishing_MiniGame_OnComplete(playerid, customData); // still on development, will implement later
+            // Fishing minigame still in development
         } else if(type == KEYMASH_TYPE_COMBAT) {
-            Combat_MiniGame_OnComplete(playerid, customData);
+            CallLocalFunction("Combat_MiniGame_OnComplete", "ii", playerid, customData);
         } else if(type == KEYMASH_TYPE_LOCKPICKING) {
-            Lockpicking_MiniGame_OnComplete(playerid, customData);
+            CallLocalFunction("Lockpicking_MiniGame_OnComplete", "ii", playerid, customData);
         }
     } else {
         if(type == KEYMASH_TYPE_HARVEST) {
-            Orange_MiniGame_OnFail(playerid, customData);
+            CallLocalFunction("Orange_MiniGame_OnFail", "ii", playerid, customData);
         } else if(type == KEYMASH_TYPE_COLLECTION || type == KEYMASH_TYPE_MINING || type == KEYMASH_TYPE_FISHING) {
-            //Fishing_MiniGame_OnFail(playerid, customData); // still on development, will implement later
+            // Fishing minigame still in development
         } else if(type == KEYMASH_TYPE_COMBAT) {
-            Combat_MiniGame_OnFail(playerid, customData);
+            CallLocalFunction("Combat_MiniGame_OnFail", "ii", playerid, customData);
         } else if(type == KEYMASH_TYPE_LOCKPICKING) {
-            Lockpicking_MiniGame_OnFail(playerid, customData);
+            CallLocalFunction("Lockpicking_MiniGame_OnFail", "ii", playerid, customData);
         }
     }
 
@@ -269,25 +268,4 @@ stock bool:Keymash_IsPlaying(playerid) {
 
 stock Keymash_GetProgress(playerid) {
     return KeymashState[playerid][Progress];
-}
-
-// ====== STUB CALLBACKS (Override in your minigame systems if needed) ======
-public Combat_MiniGame_OnComplete(playerid, customData) {
-    print("[KEYMASH] Combat_MiniGame_OnComplete called but not implemented");
-    return 1;
-}
-
-public Combat_MiniGame_OnFail(playerid, customData) {
-    print("[KEYMASH] Combat_MiniGame_OnFail called but not implemented");
-    return 1;
-}
-
-public Lockpicking_MiniGame_OnComplete(playerid, customData) {
-    print("[KEYMASH] Lockpicking_MiniGame_OnComplete called but not implemented");
-    return 1;
-}
-
-public Lockpicking_MiniGame_OnFail(playerid, customData) {
-    print("[KEYMASH] Lockpicking_MiniGame_OnFail called but not implemented");
-    return 1;
 }
