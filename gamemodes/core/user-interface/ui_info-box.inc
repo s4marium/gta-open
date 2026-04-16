@@ -103,7 +103,7 @@ public HideMessageBox(playerid, type)
     return 1;
 }
 
-stock MessageBox_Show(playerid, type, const caption[], const info[], interval = 6000)
+stock MessageBox_Show(playerid, type, const caption[], const info[], interval = 6000, bool:click_to_hide = false)
 {
     if (playerid == INVALID_PLAYER_ID)
         return 0;
@@ -155,7 +155,7 @@ stock MessageBox_Show(playerid, type, const caption[], const info[], interval = 
     }
     else
     {
-        msg_BoxClick[playerid][type] = true;
+        msg_BoxClick[playerid][type] = click_to_hide;
         msg_PlayerHasBox[playerid][type] = true;
         KillTimer(msg_BoxTimer[playerid][type]);
     }
@@ -187,12 +187,24 @@ stock void:MessageBox_ShowAllF(type, const caption[], const info[], interval = 6
 
 stock MessageBox_ShowPersistent(playerid, type, const caption[], const info[])
 {
-    return MessageBox_Show(playerid, type, caption, info, -1);
+    return MessageBox_Show(playerid, type, caption, info, -1, false);
 }
 
 stock void:MessageBox_ShowPersistentF(playerid, type, const caption[], const info[], {Float,_}:...)
 {
     new string[256];
     formatex(string, sizeof(string), info, ___(4));
-    MessageBox_Show(playerid, type, caption, string, -1);
+    MessageBox_Show(playerid, type, caption, string, -1, false);
+}
+
+stock MessageBox_ShowPersistentClickable(playerid, type, const caption[], const info[])
+{
+    return MessageBox_Show(playerid, type, caption, info, -1, true);
+}
+
+stock void:MessageBox_ShowPersistentClickableF(playerid, type, const caption[], const info[], {Float,_}:...)
+{
+    new string[256];
+    formatex(string, sizeof(string), info, ___(4));
+    MessageBox_Show(playerid, type, caption, string, -1, true);
 }
