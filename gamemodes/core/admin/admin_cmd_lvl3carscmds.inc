@@ -6,13 +6,11 @@
 #define MAX_ADMINS_VEHICLES 100
 
 static
-    SpawnedVehicles[MAX_SPAWNED_VEHICLES],
-    SpawnedVehicleCount
+    SpawnedVehicles[MAX_SPAWNED_VEHICLES]
 ;
 
 static
-    AdminVehicles[MAX_ADMINS_VEHICLES],
-    AdminVehicleCount
+    AdminVehicles[MAX_ADMINS_VEHICLES]
 ;
 
 new aVehicleNames[212][] = {	// Vehicle Names - Betamaster
@@ -317,8 +315,15 @@ GetWeaponModelIDFromName(const wname[])
 
 stock SpawnVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2)
 {
-    new v = AddStaticVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2);
-    SpawnedVehicles[SpawnedVehicleCount++] = v;
+    new v = CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, -1, 0);
+    for(new i = 0; i < MAX_SPAWNED_VEHICLES; i++)
+    {
+        if(SpawnedVehicles[i] == 0 || SpawnedVehicles[i] == v)
+        {
+            SpawnedVehicles[i] = v;
+            break;
+        }
+    }
 	return v;
 }
 
@@ -334,8 +339,15 @@ stock bool:IsSpawnedVehicle(vehicleid)
 
 stock CreateAdminVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2)
 {
-    new v = AddStaticVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2);
-    AdminVehicles[AdminVehicleCount++] = v;
+    new v = CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, -1, 0);
+    for(new i = 0; i < MAX_ADMINS_VEHICLES; i++)
+    {
+        if(AdminVehicles[i] == 0 || AdminVehicles[i] == v)
+        {
+            AdminVehicles[i] = v;
+            break;
+        }
+    }
 }
 
 stock bool:IsAdminVehicle(vehicleid)
@@ -350,13 +362,23 @@ stock bool:IsAdminVehicle(vehicleid)
 
 hook OnVehicleDeath(vehicleid, killerid)
 {
-    if(IsSpawnedVehicle(vehicleid))
+    for(new i = 0; i < MAX_SPAWNED_VEHICLES; i++)
     {
-        DestroyVehicle(vehicleid);
+        if(SpawnedVehicles[i] == vehicleid)
+        {
+            DestroyVehicle(vehicleid);
+            SpawnedVehicles[i] = 0;
+            return 1;
+        }
     }
-    if(IsAdminVehicle(vehicleid))
+    for(new i = 0; i < MAX_ADMINS_VEHICLES; i++)
     {
-        DestroyVehicle(vehicleid);
+        if(AdminVehicles[i] == vehicleid)
+        {
+            DestroyVehicle(vehicleid);
+            AdminVehicles[i] = 0;
+            return 1;
+        }
     }
     return 1;
 }
@@ -461,13 +483,16 @@ ACMD:[3]aveh(playerid, params[])
 
 ACMD:[3]dav(playerid, params[])
 {
-    for(new i = 0; i < MAX_VEHICLES; i++)
+    for(new i = 0; i < MAX_ADMINS_VEHICLES; i++)
     {
-        if(IsAdminVehicle(i) && !VehicleHasAPlayer(i))
+        new vehid = AdminVehicles[i];
+        if(vehid != 0 && !VehicleHasAPlayer(vehid))
         {
-            DestroyVehicle(i);
+            DestroyVehicle(vehid);
+            AdminVehicles[i] = 0;
         }
     }
+    SendMsgF(playerid, COLOR_MODERATION, "Deleted all empty admin vehicles.");
     return 1;
 }
 
@@ -475,13 +500,30 @@ ACMD:[3]rscars(playerid, params[])
 {
     for(new i = MAX_VEHICLES; i > 0; i--)
     {
-        if(IsSpawnedVehicle(i) && !VehicleHasAPlayer(i) || IsAdminVehicle(i) && !VehicleHasAPlayer(i))
+        if(!VehicleHasAPlayer(i))
         {
-            DestroyVehicle(i);
-        }
-        else if(!IsSpawnedVehicle(i) && !VehicleHasAPlayer(i))
-        {
-            SetVehicleToRespawn(i);
+            new bool:isAdminOrSpawned = false;
+            for(new j = 0; j < MAX_SPAWNED_VEHICLES; j++) {
+                if(SpawnedVehicles[j] == i) {
+                    DestroyVehicle(i);
+                    SpawnedVehicles[j] = 0;
+                    isAdminOrSpawned = true;
+                    break;
+                }
+            }
+            if(!isAdminOrSpawned) {
+                for(new j = 0; j < MAX_ADMINS_VEHICLES; j++) {
+                    if(AdminVehicles[j] == i) {
+                        DestroyVehicle(i);
+                        AdminVehicles[j] = 0;
+                        isAdminOrSpawned = true;
+                        break;
+                    }
+                }
+            }
+            if(!isAdminOrSpawned) {
+                SetVehicleToRespawn(i);
+            }
         }
     }
     SendMsgAllF(COLOR_MODERATION, "[ADMIN RESTARTCARS]: Admin Respawned all vehicles");
