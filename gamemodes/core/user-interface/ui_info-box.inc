@@ -184,3 +184,15 @@ stock void:MessageBox_ShowAllF(type, const caption[], const info[], interval = 6
         MessageBox_Show(i, type, caption, string, interval);
     }
 }
+
+stock MessageBox_ShowPersistent(playerid, type, const caption[], const info[])
+{
+    return MessageBox_Show(playerid, type, caption, info, -1);
+}
+
+stock void:MessageBox_ShowPersistentF(playerid, type, const caption[], const info[], {Float,_}:...)
+{
+    new string[256];
+    formatex(string, sizeof(string), info, ___(4));
+    MessageBox_Show(playerid, type, caption, string, -1);
+}
