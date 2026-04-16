@@ -1,5 +1,6 @@
 // keymash - Mash the key to fill the bar before it decays
 // Written by s4marium
+// Updated to use reusable MinigameUI system
 
 #include <YSI_Coding\y_hooks>
 
@@ -16,6 +17,9 @@
 #define KEYMASH_TYPE_HARVEST 1
 #define KEYMASH_TYPE_COLLECTION 2
 #define KEYMASH_TYPE_MINING 3
+#define KEYMASH_TYPE_FISHING 4
+#define KEYMASH_TYPE_COMBAT 5
+#define KEYMASH_TYPE_LOCKPICKING 6
 
 // ====== KEYMASH MINIGAME ENUMS ======
 enum E_KEYMASH_STATE {
@@ -33,10 +37,8 @@ enum E_KEYMASH_STATE {
 // ====== KEYMASH MINIGAME VARIABLES ======
 new KeymashState[MAX_PLAYERS][E_KEYMASH_STATE];
 
-// Textdraw UI
-new PlayerBar:KeymashProgressBar[MAX_PLAYERS];
-new PlayerText:KeymashTitle[MAX_PLAYERS];
-new PlayerText:KeymashInstructions[MAX_PLAYERS];
+// Note: UI textdraws are now managed by MinigameUI system (see ui_minigame.inc)
+// No need to create separate textdraws for each minigame
 
 // ====== FORWARD DECLARATIONS ======
 forward public Keymash_InitPlayer(playerid);
@@ -46,6 +48,10 @@ forward public Keymash_End(playerid, bool:success);
 forward public Keymash_OnDecay(playerid);
 forward public Keymash_OnTimeout(playerid);
 forward public Keymash_LoopAnimation(playerid);
+forward public Combat_MiniGame_OnComplete(playerid, customData);
+forward public Combat_MiniGame_OnFail(playerid, customData);
+forward public Lockpicking_MiniGame_OnComplete(playerid, customData);
+forward public Lockpicking_MiniGame_OnFail(playerid, customData);
 
 // ====== INITIALIZATION ======
 hook OnGameModeInit() {
@@ -71,31 +77,7 @@ public Keymash_InitPlayer(playerid) {
     KeymashState[playerid][TimeoutTimer] = 0;
     KeymashState[playerid][AnimationTimer] = 0;
 
-    // Create progress bar
-    KeymashProgressBar[playerid] = CreatePlayerProgressBar(playerid, 272.0, 363.0, 107.5, 9.2, -1347440641, 100.0, 0);
-
-    // Create title textdraw
-    KeymashTitle[playerid] = CreatePlayerTextDraw(playerid, 270.0, 350.0, "[KEYMASH]");
-    PlayerTextDrawBackgroundColor(playerid, KeymashTitle[playerid], 255);
-    PlayerTextDrawFont(playerid, KeymashTitle[playerid], TEXT_DRAW_FONT_2);
-    PlayerTextDrawLetterSize(playerid, KeymashTitle[playerid], 0.249999, 1.100000);
-    PlayerTextDrawColor(playerid, KeymashTitle[playerid], -1);
-    PlayerTextDrawSetOutline(playerid, KeymashTitle[playerid], 0);
-    PlayerTextDrawSetProportional(playerid, KeymashTitle[playerid], true);
-    PlayerTextDrawSetShadow(playerid, KeymashTitle[playerid], 1);
-    PlayerTextDrawSetSelectable(playerid, KeymashTitle[playerid], false);
-
-    // Create instructions textdraw below progress bar
-    KeymashInstructions[playerid] = CreatePlayerTextDraw(playerid, 270.0, 375.0, "Press 'SPACE' to mash");
-    PlayerTextDrawBackgroundColor(playerid, KeymashInstructions[playerid], 255);
-    PlayerTextDrawFont(playerid, KeymashInstructions[playerid], TEXT_DRAW_FONT_2);
-    PlayerTextDrawLetterSize(playerid, KeymashInstructions[playerid], 0.249999, 1.000000);
-    PlayerTextDrawColor(playerid, KeymashInstructions[playerid], -1);
-    PlayerTextDrawSetOutline(playerid, KeymashInstructions[playerid], 0);
-    PlayerTextDrawSetProportional(playerid, KeymashInstructions[playerid], true);
-    PlayerTextDrawSetShadow(playerid, KeymashInstructions[playerid], 1);
-    PlayerTextDrawSetSelectable(playerid, KeymashInstructions[playerid], false);
-
+    // UI is now managed by MinigameUI system - no textdraw creation needed!
     return 1;
 }
 
@@ -107,8 +89,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 public Keymash_OnKeyStateChange(playerid, newkeys, oldkeys) {
     if(!KeymashState[playerid][IsActive]) return 0;
 
-    // Check for SPACE key press
-    if(PRESSED(KEY_SPRINT)) {
+    // Check for key presses (use multiple keys for better compatibility while locked)
+    // KEY_FIRE = Left mouse button, KEY_ANALOG_RIGHT = Right mouse button, KEY_CTRL_BACK = W key
+    if(PRESSED(KEY_FIRE) || PRESSED(KEY_ANALOG_RIGHT) || PRESSED(KEY_CTRL_BACK) || PRESSED(KEY_SPRINT)) {
         new currentTime = GetTickCount();
 
         // Check key cooldown
@@ -136,13 +119,9 @@ public Keymash_Start(playerid, type, customData, const title[], const instructio
     // Lock player
     TogglePlayerControllable(playerid, false);
 
-    // Show UI (progress bar, title, and instructions)
-    PlayerTextDrawSetString(playerid, KeymashTitle[playerid], title);
-    PlayerTextDrawShow(playerid, KeymashTitle[playerid]);
-    PlayerTextDrawSetString(playerid, KeymashInstructions[playerid], instructions);
-    PlayerTextDrawShow(playerid, KeymashInstructions[playerid]);
-    ShowPlayerProgressBar(playerid, KeymashProgressBar[playerid]);
-    SetPlayerProgressBarValue(playerid, KeymashProgressBar[playerid], 0.0);
+    // Show UI using MinigameUI system (reusable, efficient)
+    MinigameUI_Show(playerid, title, instructions, -1); // White color
+    MinigameUI_SetProgressColor(playerid, -1); // White progress bar
 
     // Start decay timer
     KeymashState[playerid][DecayTimer] = SetTimerEx("Keymash_OnDecay", KEYMASH_DECAY_INTERVAL, true, "i", playerid);
@@ -194,9 +173,9 @@ public Keymash_OnDecay(playerid) {
 }
 
 static Keymash_UpdateDisplay(playerid) {
-    // Update progress bar value (0.0 to 100.0)
+    // Update progress bar value (0.0 to 100.0) using MinigameUI
     new Float:barValue = float(KeymashState[playerid][Progress]);
-    SetPlayerProgressBarValue(playerid, KeymashProgressBar[playerid], barValue);
+    MinigameUI_SetProgress(playerid, barValue);
 }
 
 static Keymash_Complete(playerid) {
@@ -225,11 +204,8 @@ public Keymash_End(playerid, bool:success) {
         KeymashState[playerid][AnimationTimer] = 0;
     }
 
-    // Hide UI
-    PlayerTextDrawHide(playerid, KeymashTitle[playerid]);
-    PlayerTextDrawHide(playerid, KeymashInstructions[playerid]);
-    HidePlayerProgressBar(playerid, KeymashProgressBar[playerid]);
-    SetPlayerProgressBarValue(playerid, KeymashProgressBar[playerid], 0.0);
+    // Hide UI using MinigameUI system
+    MinigameUI_Hide(playerid);
 
     // Store state before clearing
     new type = KeymashState[playerid][Type];
@@ -247,10 +223,22 @@ public Keymash_End(playerid, bool:success) {
     if(success) {
         if(type == KEYMASH_TYPE_HARVEST) {
             Orange_MiniGame_OnComplete(playerid, customData);
+        } else if(type == KEYMASH_TYPE_COLLECTION || type == KEYMASH_TYPE_MINING || type == KEYMASH_TYPE_FISHING) {
+            //Fishing_MiniGame_OnComplete(playerid, customData); // still on development, will implement later
+        } else if(type == KEYMASH_TYPE_COMBAT) {
+            Combat_MiniGame_OnComplete(playerid, customData);
+        } else if(type == KEYMASH_TYPE_LOCKPICKING) {
+            Lockpicking_MiniGame_OnComplete(playerid, customData);
         }
     } else {
         if(type == KEYMASH_TYPE_HARVEST) {
             Orange_MiniGame_OnFail(playerid, customData);
+        } else if(type == KEYMASH_TYPE_COLLECTION || type == KEYMASH_TYPE_MINING || type == KEYMASH_TYPE_FISHING) {
+            //Fishing_MiniGame_OnFail(playerid, customData); // still on development, will implement later
+        } else if(type == KEYMASH_TYPE_COMBAT) {
+            Combat_MiniGame_OnFail(playerid, customData);
+        } else if(type == KEYMASH_TYPE_LOCKPICKING) {
+            Lockpicking_MiniGame_OnFail(playerid, customData);
         }
     }
 
@@ -280,4 +268,25 @@ stock bool:Keymash_IsPlaying(playerid) {
 
 stock Keymash_GetProgress(playerid) {
     return KeymashState[playerid][Progress];
+}
+
+// ====== STUB CALLBACKS (Override in your minigame systems if needed) ======
+public Combat_MiniGame_OnComplete(playerid, customData) {
+    print("[KEYMASH] Combat_MiniGame_OnComplete called but not implemented");
+    return 1;
+}
+
+public Combat_MiniGame_OnFail(playerid, customData) {
+    print("[KEYMASH] Combat_MiniGame_OnFail called but not implemented");
+    return 1;
+}
+
+public Lockpicking_MiniGame_OnComplete(playerid, customData) {
+    print("[KEYMASH] Lockpicking_MiniGame_OnComplete called but not implemented");
+    return 1;
+}
+
+public Lockpicking_MiniGame_OnFail(playerid, customData) {
+    print("[KEYMASH] Lockpicking_MiniGame_OnFail called but not implemented");
+    return 1;
 }
