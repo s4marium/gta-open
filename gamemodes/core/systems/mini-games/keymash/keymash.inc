@@ -223,6 +223,7 @@ public Keymash_End(playerid, bool:success) {
     if(success) {
         if(type == KEYMASH_TYPE_HARVEST) {
             Orange_MiniGame_OnComplete(playerid, customData);
+            CallLocalFunction("Orange_MiniGame_OnComplete", "ii", playerid, customData);
         } else if(type == KEYMASH_TYPE_COLLECTION || type == KEYMASH_TYPE_MINING || type == KEYMASH_TYPE_FISHING) {
             //Fishing_MiniGame_OnComplete(playerid, customData); // still on development, will implement later
         } else if(type == KEYMASH_TYPE_COMBAT) {
