@@ -30,3 +30,19 @@ CMD:leavehunt(playerid, params[])
 
     return 1;
 }
+
+CMD:giveweaponcam(playerid, params[])
+{
+    if(!GhostHunting_IsHunting(playerid)) {
+        return SendErrorMsg(playerid, "You must be on a ghost hunt to use this command!");
+    }
+
+    // Give thermal vision camera (weapon ID 43)
+    GivePlayerWeapon(playerid, 43, 900);
+
+    new msg[128];
+    format(msg, sizeof(msg), "[GHOST HUNT]"C_WHITE" You have been given a thermal vision camera! Use it to detect ghosts!");
+    SendClientMessage(playerid, COLOR_ORANGE, msg);
+
+    return 1;
+}

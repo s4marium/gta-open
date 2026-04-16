@@ -360,6 +360,7 @@ stock GhostHunting_EndSession(playerid) {
     }
 
     stop playerGhostData[playerid][ghostSessionTimer];
+    HideMessageBox(playerid, TYPE_MSGBOX);
 
     new totalGhosts = playerGhostData[playerid][ghostsCaught];
 
@@ -482,10 +483,10 @@ timer OnGhostSessionUpdate[500](playerid) {
             hudRewards
         );
 
-        ShowPlayerPopup(playerid, "~y~[GHOST HUNT SESSION]", hud, 500);
+        MessageBox_ShowPersistent(playerid, TYPE_MSGBOX, "~y~[GHOST HUNT SESSION]", hud);
     } else {
-        // All ghosts caught - clear the HUD popup
-        GameFeed_ResetAllTextDraws(playerid);
+        // All ghosts caught - hide the HUD popup
+        HideMessageBox(playerid, TYPE_MSGBOX);
     }
 
     return 1;
