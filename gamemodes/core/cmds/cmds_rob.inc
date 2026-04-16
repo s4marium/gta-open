@@ -46,9 +46,16 @@ CMD:rob(playerid, params[])
         return 1;
     }
 
+    new max_robbed = (GetPlayerMoney(targetid) / 100) * 3;
+    
+    // Cap the maximum base robbery amount to $10,000 to prevent economy breaking
+    if (max_robbed > 10000) {
+        max_robbed = 10000;
+    }
+
     new
-        // 3% of player's money + $300 on top.
-        robbedcash = random((GetPlayerMoney(targetid) / 100) * 3 ) + 300;
+        // 3% of player's money + $300 on top, up to a max of $10,300.
+        robbedcash = random(max_robbed) + 300;
 
     CallLocalFunction("OnPlayerRobPlayer", "iii", playerid, targetid, robbedcash);
 

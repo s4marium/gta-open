@@ -8,7 +8,7 @@ ACMD:[5]setadmin(playerid, params[])
         return SendSyntaxMsg(playerid, "/setadmin [player] [level]");
     }
 
-    if(IsPlayerConnected(targetid)) {
+    if(!IsPlayerConnected(targetid)) {
         return SendErrorMsg(playerid, "INVALID PLAYER!");
     }
 
