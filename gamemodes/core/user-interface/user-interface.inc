@@ -28,3 +28,8 @@
 
 // notifications that has an fade in and fade out effect, used for the cash change and subtitles and also the popups etc..
 #include <ui_gamefeed>
+
+// ============== MINIGAME UI SYSTEM ==============
+// Reusable UI system for all minigames (hold-key, keymash, etc)
+// Saves resources by reusing textdraws instead of creating new ones for each minigame
+#include <ui_minigame>

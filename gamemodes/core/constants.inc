@@ -28,7 +28,7 @@
 #define ADMIN_DEBUG_HANDLER     "admin"
 
 // YSI
-#define CGEN_MEMORY (20000) // needs looking at, no clue why we had to increase this. YSI said so.
+#define CGEN_MEMORY (60000) // needs looking at, no clue why we had to increase this. YSI said so.
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_VERSION_CHECK
 #define YSI_NO_HEAP_MALLOC
