@@ -92,6 +92,14 @@ stock MinigameUI_Initialize(playerid)
     if (!IsPlayerConnected(playerid))
         return 0;
 
+    // Skip if already initialized
+    if (s_MinigameUI[playerid][mg_Title] != PlayerText:INVALID_TEXT_DRAW)
+        return 1;
+
+    // Initialize all handles to INVALID before creation
+    s_MinigameUI[playerid][mg_Title] = PlayerText:INVALID_TEXT_DRAW;
+    s_MinigameUI[playerid][mg_Instructions] = PlayerText:INVALID_TEXT_DRAW;
+    s_MinigameUI[playerid][mg_ProgressBar] = PlayerBar:INVALID_PLAYER_BAR_ID;
     s_MinigameUI[playerid][mg_Visible] = false;
     s_MinigameUI[playerid][mg_TitleColor] = -1;
     s_MinigameUI[playerid][mg_ProgressColor] = -1;
@@ -109,7 +117,7 @@ stock MinigameUI_Initialize(playerid)
     );
 
     // Create title textdraw
-    s_MinigameUI[playerid][mg_Title] = CreatePlayerTextDraw(playerid, 270.0, 350.0, "~w~[MINIGAME]");
+    s_MinigameUI[playerid][mg_Title] = CreatePlayerTextDraw(playerid, 270.0, 350.0, "[MINIGAME]");
     PlayerTextDrawBackgroundColor(playerid, s_MinigameUI[playerid][mg_Title], 255);
     PlayerTextDrawFont(playerid, s_MinigameUI[playerid][mg_Title], TEXT_DRAW_FONT_2);
     PlayerTextDrawLetterSize(playerid, s_MinigameUI[playerid][mg_Title], 0.249999, 1.100000);
@@ -120,7 +128,7 @@ stock MinigameUI_Initialize(playerid)
     PlayerTextDrawSetSelectable(playerid, s_MinigameUI[playerid][mg_Title], false);
 
     // Create instructions textdraw
-    s_MinigameUI[playerid][mg_Instructions] = CreatePlayerTextDraw(playerid, 270.0, 375.0, "~w~Press SPACE to start");
+    s_MinigameUI[playerid][mg_Instructions] = CreatePlayerTextDraw(playerid, 270.0, 375.0, "Press SPACE to start");
     PlayerTextDrawBackgroundColor(playerid, s_MinigameUI[playerid][mg_Instructions], 255);
     PlayerTextDrawFont(playerid, s_MinigameUI[playerid][mg_Instructions], TEXT_DRAW_FONT_2);
     PlayerTextDrawLetterSize(playerid, s_MinigameUI[playerid][mg_Instructions], 0.249999, 1.000000);
@@ -142,14 +150,9 @@ stock MinigameUI_Show(playerid, const title[], const instructions[], color = -1)
     if (s_MinigameUI[playerid][mg_Title] == PlayerText:INVALID_TEXT_DRAW)
         return 0;
 
-    // Update title and instructions text
-    new formattedTitle[128];
-    format(formattedTitle, sizeof(formattedTitle), "~w~%s", title);
-    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Title], formattedTitle);
-
-    new formattedInstructions[256];
-    format(formattedInstructions, sizeof(formattedInstructions), "~w~%s", instructions);
-    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Instructions], formattedInstructions);
+    // Update title and instructions text (no color codes - use PlayerTextDrawColor)
+    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Title], title);
+    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Instructions], instructions);
 
     // Set color if provided
     if (color != -1)
@@ -253,9 +256,7 @@ stock MinigameUI_SetTitle(playerid, const title[])
     if (s_MinigameUI[playerid][mg_Title] == PlayerText:INVALID_TEXT_DRAW)
         return 0;
 
-    new formattedTitle[128];
-    format(formattedTitle, sizeof(formattedTitle), "~w~%s", title);
-    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Title], formattedTitle);
+    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Title], title);
 
     return 1;
 }
@@ -269,9 +270,7 @@ stock MinigameUI_SetInstructions(playerid, const instructions[])
     if (s_MinigameUI[playerid][mg_Instructions] == PlayerText:INVALID_TEXT_DRAW)
         return 0;
 
-    new formattedInstructions[256];
-    format(formattedInstructions, sizeof(formattedInstructions), "~w~%s", instructions);
-    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Instructions], formattedInstructions);
+    PlayerTextDrawSetString(playerid, s_MinigameUI[playerid][mg_Instructions], instructions);
 
     return 1;
 }
