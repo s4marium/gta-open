@@ -84,6 +84,33 @@ hook OnPlayerDisconnect(playerid, reason) {
           KillTimer(OrangePlayerState[playerid][CollectionTimer]);
           OrangePlayerState[playerid][CollectionTimer] = 0;
      }
+     if(OrangePlayerState[playerid][IsCollecting]) {
+          new treeIndex = OrangePlayerState[playerid][CurrentTree];
+
+          if(treeIndex >= 0 && treeIndex < sizeof(OrangeTrees)) {
+               // Release the tree lock
+               TreeAvailable[treeIndex] = true;
+
+               // Start respawn timer to mark tree as empty
+               TreeRespawnTime[treeIndex] = (ORANGE_RESPAWN_TIME / 1000);
+               if(TreeRespawnTimer[treeIndex]) KillTimer(TreeRespawnTimer[treeIndex]);
+               TreeRespawnTimer[treeIndex] = SetTimerEx("Orange_UpdateTreeTimer", 1000, true, "i", treeIndex);
+               SetTimerEx("Orange_RespawnTree", ORANGE_RESPAWN_TIME, false, "i", treeIndex);
+
+               // Update label to show empty state
+               new labelText[128];
+               format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: %ds", ORANGE_RESPAWN_TIME / 1000);
+               UpdateDynamic3DTextLabelText(OrangeTreeLabels[treeIndex], COLOR_YELLOW, labelText);
+
+               #if ORANGE_FARM_DEBUG
+               printf("[ORANGE] Player %d disconnected mid-harvest at tree %d - tree released", playerid, treeIndex);
+               #endif
+          }
+
+          // Reset player state
+          OrangePlayerState[playerid][IsCollecting] = false;
+          OrangePlayerState[playerid][CurrentTree] = -1;
+     }
      return 1;
 }
 
