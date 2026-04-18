@@ -6,7 +6,7 @@
 	"dependencies": [
 		"pawn-lang/samp-stdlib@open.mp",
 		"pawn-lang/pawn-stdlib@open.mp",
-		"Y-Less/sscanf:v2.8.3",
+		"Y-Less/sscanf:v2.13.0",
 		"pawn-lang/YSI-Includes@5.x",
 		"AmyrAhmady/samp-plugin-crashdetect:v4.22",
 		"Zeex/amx_assembly:v1.0",
@@ -15,7 +15,7 @@
 		"pBlueG/SA-MP-MySQL:R41-4",
 		"s4marium/samp-logger:1.5.1",
 		"PatrickGTR/MySQL-Prepared-Statements",
-		"samp-incognito/samp-streamer-plugin:v2.9.4",
+		"samp-incognito/samp-streamer-plugin:v2.9.6",
 		"kristoisberg/samp-map-zones",
 		"s4marium/samp-ini:1.1.1",
 		"Sreyas-Sreelal/samp-bcrypt:0.4.1"
