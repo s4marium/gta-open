@@ -205,26 +205,7 @@ stock void:ATM_Load() {
         MySQL_BindResultInt(stmt_LoadATM, 7, world);
         MySQL_BindResultInt(stmt_LoadATM, 8, interior);
 
-
-        // Thanks to Lorenc for this ATM position.
-        Internal_ATM_Create(2234.733398, 51.345561000, 26.134365, 0.0, 0.0, 0.000000);
-        Internal_ATM_Create(1381.069213, 259.56204200, 19.156929, 0.0, 0.0, 157.0000);
-        Internal_ATM_Create(661.3598020, -555.1714470, 15.965932, 0.0, 0.0, -90.0000);
-        Internal_ATM_Create(-2177.50292, -2435.006591, 30.214990, 0.0, 0.0, 52.00000);
-        Internal_ATM_Create(1367.251464, -1284.611938, 13.156874, 0.0, 0.0, -90.6000);
-        Internal_ATM_Create(1928.592651, -1771.088012, 13.172806, 0.0, 0.0, 90.00000);
-        Internal_ATM_Create(2323.767333, -1644.993896, 14.442724, 0.0, 0.0, 0.000000);
-        Internal_ATM_Create(2043.748779, -1416.704711, 16.810766, 0.0, 0.0, -90.0000);
-        Internal_ATM_Create(2387.751464, -1981.961669, 13.156866, 0.0, 0.0, -180.000);
-        Internal_ATM_Create(1494.450195, -1768.979492, 18.365745, 0.0, 0.0, -90.0000);
-        Internal_ATM_Create(1051.627075, -1026.406616, 31.661567, 0.0, 0.0, 0.000000);
-        Internal_ATM_Create(816.8725580, -1356.521240, 13.156099, 0.0, 0.0, -180.000);
-        Internal_ATM_Create(1808.732177, -1567.267822, 13.063967, 0.0, 0.0, 37.00000);
-        Internal_ATM_Create(2412.541259, -1492.666992, 23.628126, 0.0, 0.0, -180.000);
-        Internal_ATM_Create(2431.131347, -1219.477539, 25.022165, 0.0, 0.0, 0.000000);
-        Internal_ATM_Create(255.4551690, -197.5846250, 1.2381240, 0.0, 0.0, -90.0000);
-
-
+        // Load all ATMs from database
         while(MySQL_Statement_FetchRow(stmt_LoadATM)) {
             new idx = Internal_ATM_Create(x, y, z, rx, ry, rz, world, interior);
             ATM_ID[idx] = atmID;
@@ -244,6 +225,8 @@ stock void:ATM_Load() {
     }
     MySQL_ExecuteThreaded_Inline(stmt_LoadATM, using inline OnATMLoad);
 }
+
+
 
 void:ATM_UpdateLabel(atmIndex, colour = COLOR_YELLOW, const label[] = ATM_LABEL_INFO) {
     // Delete the current atm if one already exists in this index.

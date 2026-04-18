@@ -26,7 +26,7 @@ enum E_ORANGE_STATE {
 };
 // ====== GLOBAL VARIABLES ======
 new OrangePlayerState[MAX_PLAYERS][E_ORANGE_STATE];
-new bool:TreeAvailable[MAX_PLAYERS][8];
+new bool:TreeAvailable[8];  // Global tree availability (shared by all players)
 new Text3D:OrangeTreeLabels[8];
 new TreeRespawnTime[8]; // Track respawn timer for each tree
 new TreeRespawnTimer[8]; // Timer ID for each tree
@@ -59,10 +59,11 @@ forward Orange_MiniGame_OnFail(playerid, customData);
 hook OnGameModeInit() {
      LoadOrangeJob();
 
-     // Initialize respawn times
+     // Initialize respawn times and tree availability
      for(new i = 0; i < 8; i++) {
           TreeRespawnTime[i] = 0;
           TreeRespawnTimer[i] = 0;
+          TreeAvailable[i] = true;  // Initialize all trees as available
      }
      return 1;
 }
@@ -71,10 +72,6 @@ hook OnPlayerConnect(playerid) {
      OrangePlayerState[playerid][IsCollecting] = false;
      OrangePlayerState[playerid][CurrentTree] = -1;
      OrangePlayerState[playerid][CollectionTimer] = 0;
-
-     for(new i = 0; i < 8; i++) {
-          TreeAvailable[playerid][i] = true;
-     }
 
      // Initialize mini-game textdraws for this player
      Keymash_InitPlayer(playerid);
@@ -87,6 +84,33 @@ hook OnPlayerDisconnect(playerid, reason) {
           KillTimer(OrangePlayerState[playerid][CollectionTimer]);
           OrangePlayerState[playerid][CollectionTimer] = 0;
      }
+     if(OrangePlayerState[playerid][IsCollecting]) {
+          new treeIndex = OrangePlayerState[playerid][CurrentTree];
+
+          if(treeIndex >= 0 && treeIndex < sizeof(OrangeTrees)) {
+               // Release the tree lock
+               TreeAvailable[treeIndex] = true;
+
+               // Start respawn timer to mark tree as empty
+               TreeRespawnTime[treeIndex] = (ORANGE_RESPAWN_TIME / 1000);
+               if(TreeRespawnTimer[treeIndex]) KillTimer(TreeRespawnTimer[treeIndex]);
+               TreeRespawnTimer[treeIndex] = SetTimerEx("Orange_UpdateTreeTimer", 1000, true, "i", treeIndex);
+               SetTimerEx("Orange_RespawnTree", ORANGE_RESPAWN_TIME, false, "i", treeIndex);
+
+               // Update label to show empty state
+               new labelText[128];
+               format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"EMPTY - Respawn: %ds", ORANGE_RESPAWN_TIME / 1000);
+               UpdateDynamic3DTextLabelText(OrangeTreeLabels[treeIndex], COLOR_YELLOW, labelText);
+
+               #if ORANGE_FARM_DEBUG
+               printf("[ORANGE] Player %d disconnected mid-harvest at tree %d - tree released", playerid, treeIndex);
+               #endif
+          }
+
+          // Reset player state
+          OrangePlayerState[playerid][IsCollecting] = false;
+          OrangePlayerState[playerid][CurrentTree] = -1;
+     }
      return 1;
 }
 
@@ -97,9 +121,25 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
      if(PRESSED(KEY_NO)) {
           new treeIndex = Orange_GetNearestTree(playerid);
 
-          if(treeIndex != -1 && TreeAvailable[playerid][treeIndex]) {
+          if(treeIndex != -1) {
+               // Player is already collecting
                if(!OrangePlayerState[playerid][IsCollecting]) {
-                    Orange_StartCollection(playerid, treeIndex);
+                    // Tree is respawning (empty)
+                    if(!TreeAvailable[treeIndex] && TreeRespawnTime[treeIndex] > 0) {
+                         new msg[128];
+                         format(msg, sizeof(msg), "~r~[EMPTY]~w~ Tree respawns in ~y~%ds~w~!", TreeRespawnTime[treeIndex]);
+                         Alert_Send(playerid, msg, 3000);
+                    }
+                    // Tree is being collected by another player
+                    else if(!TreeAvailable[treeIndex]) {
+                         Alert_Send(playerid, "~r~[ERROR]~w~ This tree is already being collected by another player!", 3000);
+                    }
+                    // Tree is available - start collection
+                    else if(TreeAvailable[treeIndex]) {
+                         Orange_StartCollection(playerid, treeIndex);
+                    }
+               } else {
+                    Alert_Send(playerid, "~r~[ERROR]~w~ You are already collecting from a tree!", 3000);
                }
           }
 
@@ -124,8 +164,8 @@ Orange_StartCollection(playerid, treeIndex) {
 
      OrangePlayerState[playerid][IsCollecting] = true;
      OrangePlayerState[playerid][CurrentTree] = treeIndex;
-     TreeAvailable[playerid][treeIndex] = false;
-     ShowPlayerPopup(playerid, "Orange Farm Sessions:", "To fill the skill bar press ~g~SPACE~w~ or ~g~SHIFT~w~. To cancel the Orange Farm Session press ~y~ALT~w~ button!", 5000);
+     TreeAvailable[treeIndex] = false;
+     MessageBox_Show(playerid, TYPE_INFORMATION, "~y~Orange Farm Sessions", "To fill the skill bar press ~g~SPACE~w~ or ~g~SHIFT~w~. To cancel the Orange Farm Session press ~y~ALT~w~ button!", 5000);
      new labelText[128];
      format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_RED"BEING COLLECTED");
      UpdateDynamic3DTextLabelText(OrangeTreeLabels[treeIndex], COLOR_YELLOW, labelText);
@@ -264,11 +304,7 @@ LoadOrangeJob() {
 public Orange_RespawnTree(treeIndex) {
      if(treeIndex < 0 || treeIndex >= sizeof(OrangeTrees)) return 0;
 
-     for(new i = 0; i < MAX_PLAYERS; i++) {
-          if(IsPlayerConnected(i)) {
-               TreeAvailable[i][treeIndex] = true;
-          }
-     }
+     TreeAvailable[treeIndex] = true;
 
      if(TreeRespawnTimer[treeIndex]) {
           KillTimer(TreeRespawnTimer[treeIndex]);
@@ -308,9 +344,7 @@ public Orange_UpdateTreeTimer(treeIndex) {
 Orange_GetNearestTree(playerid) {
      for(new i = 0; i < sizeof(OrangeTrees); i++) {
           if(IsPlayerInRangeOfPoint(playerid, 5.0, OrangeTrees[i][0], OrangeTrees[i][1], OrangeTrees[i][2])) {
-               if(TreeAvailable[playerid][i]) {
-                    return i;
-               }
+               return i;
           }
      }
      return -1;
@@ -339,10 +373,12 @@ public Orange_MiniGame_OnComplete(playerid, customData) {
 
      OrangePlayerState[playerid][IsCollecting] = false;
      OrangePlayerState[playerid][CurrentTree] = -1;
+
+     return 1;
 }
 
 public Orange_MiniGame_OnFail(playerid, customData) {
-     TreeAvailable[playerid][customData] = true;
+     TreeAvailable[customData] = true;
 
      new labelText[128];
      format(labelText, sizeof(labelText), "[ORANGE TREE]\n"C_WHITE"Press 'N' to harvest");
@@ -352,4 +388,6 @@ public Orange_MiniGame_OnFail(playerid, customData) {
 
      OrangePlayerState[playerid][IsCollecting] = false;
      OrangePlayerState[playerid][CurrentTree] = -1;
+
+     return 1;
 }
