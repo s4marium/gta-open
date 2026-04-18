@@ -22,7 +22,6 @@ static GPS_ClearLocation(playerid) {
         DestroyDynamicCP(PlayerGPSCheckpoint[playerid]);
     }
     PlayerGPSCheckpoint[playerid] = -1;
-    DisablePlayerCheckpoint(playerid); // Clear native checkpoint as well
 }
 
 static GPS_SetLocation(playerid, Float:x, Float:y, Float:z, const string:msg[]) {
