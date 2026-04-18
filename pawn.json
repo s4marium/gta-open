@@ -6,7 +6,7 @@
 	"dependencies": [
 		"pawn-lang/samp-stdlib@open.mp",
 		"pawn-lang/pawn-stdlib@open.mp",
-		"Y-Less/sscanf:v2.13.0",
+		"Y-Less/sscanf:v2.13.8",
 		"pawn-lang/YSI-Includes@5.x",
 		"AmyrAhmady/samp-plugin-crashdetect:v4.22",
 		"Zeex/amx_assembly:v1.0",
