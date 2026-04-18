@@ -11,6 +11,7 @@
 #include <cmds_breakcuff>
 #include <cmds_breakout>
 #include <cmds_ghosthunt>
+#include <cmds_gps>
 
 static
 	cmd_Cooldown[MAX_PLAYERS],
