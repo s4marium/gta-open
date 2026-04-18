@@ -26,7 +26,7 @@ static GPS_ClearLocation(playerid) {
 
 static GPS_SetLocation(playerid, Float:x, Float:y, Float:z, const string:msg[]) {
     GPS_ClearLocation(playerid);
-    PlayerGPSCheckpoint[playerid] = CreateDynamicCP(x, y, z, 5.0, .worldid = -1, .interiorid = -1, .playerid = playerid, .streamdistance = 99999.0);
+    PlayerGPSCheckpoint[playerid] = CreateDynamicCP(x, y, z, 5.0, .worldid = -1, .interiorid = -1, .playerid = playerid, .streamdistance = GPS_STREAMDISTANCE);
     SendServerMsg(playerid, msg);
 }
 

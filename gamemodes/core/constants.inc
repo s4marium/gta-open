@@ -68,6 +68,7 @@
 // Streamer
 #define TEXTLABEL_STREAMDISTANCE    (200)
 #define CHECKPOINT_STREAMDISTANCE   (200)
+#define GPS_STREAMDISTANCE          (99999.0) // Global distance to ensure checkpoint is visible from anywhere
 #define MAPICON_STREAMDISTANCE      (500)
 
 // Gang
