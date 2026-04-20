@@ -26,3 +26,6 @@
 
 //side jobs
 #include <side-jobs>
+
+// GPS pathfinding system
+#include <gps_system>
