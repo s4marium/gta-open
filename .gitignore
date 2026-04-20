@@ -26,11 +26,17 @@ server.cfg
 
 # Plugins directory
 plugins/
+!plugins/
+plugins/*
+!plugins/GPS.dll
+!plugins/GPS.so
 
 # binaries
 *.exe
 *.dll
 *.so
+!GPS.dll
+!GPS.so
 announce
 samp03svr
 samp-npc
