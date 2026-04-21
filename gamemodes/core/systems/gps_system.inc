@@ -1,4 +1,5 @@
 #include <YSI_Coding\y_hooks>
+#undef INVALID_PATH_ID
 #include <GPS>
 
 #define MAX_GPS_ARROWS 25
