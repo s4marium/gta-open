@@ -1,4 +1,6 @@
 #include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_timers>
+
 
 static
     bool:gPlayerIsSpectating[MAX_PLAYERS],
@@ -64,13 +66,26 @@ hook OnPlayerSpawn(playerid)
         Weapon_Load(playerid);
         SetPlayerHealth(playerid, gPlayerHealth[playerid]);
         SetPlayerArmour(playerid, gPlayerArmour[playerid]);
-        gPlayerIsSpectating[playerid] = false;
+        defer ResetPlayerSpecState(playerid);
         SetPlayerPos(playerid, gPlayerLastPos[playerid][0], gPlayerLastPos[playerid][1], gPlayerLastPos[playerid][2]);
         SetPlayerInterior(playerid, gPlayerLastInterior[playerid]);
         SetPlayerVirtualWorld(playerid, gPlayerLastWorld[playerid]);
     }
     return 1;
 }
+
+timer ResetPlayerSpecState[50](playerid)
+{
+    gPlayerIsSpectating[playerid] = false;
+    return 1;
+}
+
+forward bool:Admin_IsPlayerSpectating(playerid);
+public bool:Admin_IsPlayerSpectating(playerid)
+{
+    return gPlayerIsSpectating[playerid];
+}
+
 
 ACMD:[1]spec(playerid, params[])
 {

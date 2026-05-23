@@ -46,6 +46,9 @@ hook OnPlayerConnect(playerid) {
 }
 
 hook OnPlayerSpawn(playerid) {
+    if (CallLocalFunction("Admin_IsPlayerSpectating", "i", playerid)) {
+        return 1;
+    }
 
     // Execute this when player spawns for the first time.
     if(PlayerFirstSpawn[playerid]) {
