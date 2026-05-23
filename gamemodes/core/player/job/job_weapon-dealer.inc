@@ -39,7 +39,7 @@ CMD:sellgun(playerid, params[])
     }
 
 	if (sscanf(params, "riii", targetid, weaponid, weaponprice, weaponammo)) {
-		return SendSyntaxMsg(playerid, "/sellweapon <playerid> <weaponid> <price> <ammo (max 1,000)>");
+		return SendSyntaxMsg(playerid, "/sellgun <playerid> <weaponid> <price> <ammo (max 1,000)>");
     }
 
 	if (!IsPlayerConnected(targetid)) {
@@ -58,7 +58,7 @@ CMD:sellgun(playerid, params[])
 		return SendErrorMsg(playerid, "You can not sell a gun to your self.");
     }
 
-	if (1000 <= weaponprice < 8000) {
+	if (weaponprice < 1000 || weaponprice > 8000) {
 		return SendErrorMsg(playerid, "Weapon price could not go lower than 1,000 and higher than 8,000");
     }
 
@@ -85,7 +85,7 @@ CMD:sellgun(playerid, params[])
 
 CMD:acceptgun(playerid, params[])
 {
-	if (Bit_Get(HasBeenOffered, playerid)) {
+	if (!Bit_Get(HasBeenOffered, playerid)) {
 		return SendErrorMsg(playerid, "No one offered you a gun.");
     }
 
@@ -167,7 +167,7 @@ CMD:sellarmour(playerid, params[])
 
 CMD:acceptarmour(playerid, params[])
 {
-	if (HasBeenOffered[playerid]) {
+	if (!Bit_Get(HasBeenOffered, playerid)) {
 		return SendErrorMsg(playerid, "No one offered you armour.");
     }
 
