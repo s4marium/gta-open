@@ -4,6 +4,8 @@
 // Ervin Lance Zamora (c) 2020 April
 // Github -> https://github.com/CnRXoMoX
 
+#define _INC_omp_npc
+
 // Credits to these people, made the production easier.
 // Southclaw, Y_Less, maddinatOr, SyS, Zeex, Slice, Lorenc
 
@@ -11,6 +13,7 @@
 // Letter-size-y = letter-size-x * 4
 // For a nice font display
 #define SAMP_COMPAT
+
 
 #if 0
 	// called when player successfully logged in.

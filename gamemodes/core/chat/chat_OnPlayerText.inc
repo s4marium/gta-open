@@ -72,7 +72,7 @@ public OnPlayerText(playerid, text[])
         }
 
         foreach(new i : Player) {
-            if(Admin_GetPlayerLevel(playerid) <= 0) {
+            if(Admin_GetPlayerLevel(i) <= 0) {
                 continue;
             }
 

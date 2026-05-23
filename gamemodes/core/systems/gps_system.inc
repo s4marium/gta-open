@@ -1,8 +1,13 @@
 #include <YSI_Coding\y_hooks>
-#undef INVALID_PATH_ID
+#if defined INVALID_PATH_ID
+    #undef INVALID_PATH_ID
+#endif
 #include <GPS>
 
+#define INVALID_GPS_PATH_ID INVALID_PATH_ID
+
 #define MAX_GPS_ARROWS 25
+
 
 // GPS System - Core logic for GPS checkpoint pathfinding with distance tracking
 

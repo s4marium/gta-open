@@ -4,6 +4,9 @@ static
 	BitArray:Player_SpawnProtection<MAX_PLAYERS>;
 
 hook OnPlayerSpawn(playerid) {
+    if (CallLocalFunction("Admin_IsPlayerSpectating", "i", playerid)) {
+        return 1;
+    }
 	MessageBox_Show(playerid, TYPE_INFORMATION, "~y~Spawn Protection", "You are spawn protected for 5 seconds.", 5000);
    	defer EndPlayerSpawnProtection(playerid);
    	Bit_Let(Player_SpawnProtection, playerid);
