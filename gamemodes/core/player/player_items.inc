@@ -449,7 +449,7 @@ CMD:crack(playerid, params[]) {
     SetPlayerDrunkLevel(playerid, 5000); // Drunken effect
 
     // Apply smoking animation
-    ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, false, true, true, true, 0, SYNC_ALL);
+    ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, false, true, true, false, 0, SYNC_ALL);
 
     Player_GiveCrack(playerid, -1);
     
