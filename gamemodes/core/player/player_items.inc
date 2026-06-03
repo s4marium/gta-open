@@ -424,3 +424,36 @@ ACMD:[4]giveitem(playerid, params[]) {
     SendServerMsgF(playerid, "%p[%i] have given you x"C_YELLOW"%i "C_GREY"%s", playerid, playerid, amount, validItems[itemId]);
     return 1;
 }
+
+CMD:crack(playerid, params[]) {
+    if(Player_GetCrack(playerid) < 1) {
+        return SendErrorMsg(playerid, "You don't have any crack cocaine on you.");
+    }
+
+    new
+        Float:hp,
+        Float:armour;
+
+    GetPlayerHealth(playerid, hp);
+    GetPlayerArmour(playerid, armour);
+
+    // Crack Effect: Give 50 HP and 50 Armour, and visual drunk effect
+    hp += 50.0;
+    if(hp > 100.0) hp = 100.0;
+    SetPlayerHealth(playerid, hp);
+
+    armour += 50.0;
+    if(armour > 100.0) armour = 100.0;
+    SetPlayerArmour(playerid, armour);
+
+    SetPlayerDrunkLevel(playerid, 5000); // Drunken effect
+
+    // Apply smoking animation
+    ApplyAnimation(playerid, "SMOKING", "M_smk_in", 4.1, false, true, true, true, 0, SYNC_ALL);
+
+    Player_GiveCrack(playerid, -1);
+    
+    SendClientMessage(playerid, COLOR_GREEN, "** DRUGS ** "C_WHITE"You smoked a hit of crack. Your health and armour increased, but you feel dizzy!");
+    return 1;
+}
+

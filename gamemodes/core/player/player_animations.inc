@@ -594,7 +594,7 @@ CMD:eat(playerid,params[])  {
 	return 1;
 }
 
-CMD:crack(playerid,params[])  {
+CMD:animcrack(playerid,params[])  {
 	ApplyAnimation_UI(playerid, "CRACK", "crckdeth2", 4.1, 0, 1, 1, 1, 1, 1);
 	return 1;
 }
