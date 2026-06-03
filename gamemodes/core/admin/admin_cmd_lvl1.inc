@@ -172,6 +172,7 @@ ACMD:[1]afix(playerid, params[])
 }
 
 #include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_timers>
 
 static
 	bool:isReconnecting[MAX_PLAYERS],
@@ -186,6 +187,32 @@ hook OnPlayerConnect(playerid)
 }
 
 hook OnPlayerDisconnect(playerid, reason)
+{
+	if (isReconnecting[playerid]) {
+		new cmd[32];
+		format(cmd, sizeof(cmd), "unbanip %s", reconnectIP[playerid]);
+		SendRconCommand(cmd);
+		isReconnecting[playerid] = false;
+		reconnectIP[playerid][0] = '\0';
+	}
+	return 1;
+}
+
+hook OnGameModeExit()
+{
+	for (new i = 0; i < MAX_PLAYERS; i++) {
+		if (isReconnecting[i]) {
+			new cmd[32];
+			format(cmd, sizeof(cmd), "unbanip %s", reconnectIP[i]);
+			SendRconCommand(cmd);
+			isReconnecting[i] = false;
+			reconnectIP[i][0] = '\0';
+		}
+	}
+	return 1;
+}
+
+timer UnbanPlayerIP[1000](playerid)
 {
 	if (isReconnecting[playerid]) {
 		new cmd[32];
@@ -231,5 +258,7 @@ ACMD:[1]relog(playerid, params[])
 	SendRconCommand(cmd);
 
 	Kick(targetid);
+
+	defer UnbanPlayerIP(targetid);
 	return 1;
 }
