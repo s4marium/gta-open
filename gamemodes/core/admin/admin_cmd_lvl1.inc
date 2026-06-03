@@ -1,4 +1,5 @@
-
+#include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_timers>
 
 ACMD:[1]get(playerid, params[])
 {
@@ -168,5 +169,94 @@ ACMD:[1]afix(playerid, params[])
 {
 	if(!IsPlayerInAnyVehicle(playerid)) return SendErrorMsg(playerid, "You're not in any vehicle");
 	RepairVehicle(GetPlayerVehicleID(playerid));
+	return 1;
+}
+
+static
+	bool:isReconnecting[MAX_PLAYERS],
+	reconnectIP[MAX_PLAYERS][16]
+;
+
+hook OnPlayerConnect(playerid)
+{
+	isReconnecting[playerid] = false;
+	reconnectIP[playerid][0] = '\0';
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if (isReconnecting[playerid]) {
+		new cmd[32];
+		format(cmd, sizeof(cmd), "unbanip %s", reconnectIP[playerid]);
+		SendRconCommand(cmd);
+		isReconnecting[playerid] = false;
+		reconnectIP[playerid][0] = '\0';
+	}
+	return 1;
+}
+
+hook OnGameModeExit()
+{
+	for (new i = 0; i < MAX_PLAYERS; i++) {
+		if (isReconnecting[i]) {
+			new cmd[32];
+			format(cmd, sizeof(cmd), "unbanip %s", reconnectIP[i]);
+			SendRconCommand(cmd);
+			isReconnecting[i] = false;
+			reconnectIP[i][0] = '\0';
+		}
+	}
+	return 1;
+}
+
+timer UnbanPlayerIP[1000](playerid)
+{
+	if (isReconnecting[playerid]) {
+		new cmd[32];
+		format(cmd, sizeof(cmd), "unbanip %s", reconnectIP[playerid]);
+		SendRconCommand(cmd);
+		isReconnecting[playerid] = false;
+		reconnectIP[playerid][0] = '\0';
+	}
+	return 1;
+}
+
+ACMD:[1]relog(playerid, params[])
+{
+	new targetid = INVALID_PLAYER_ID;
+	new reason[64] = "None";
+
+	if (isnull(params)) {
+		targetid = playerid;
+		format(reason, sizeof(reason), "Self reconnect");
+	} else {
+		if (sscanf(params, "uS[64](No Reason)", targetid, reason)) {
+			if (sscanf(params, "u", targetid)) {
+				return SendSyntaxMsg(playerid, "/relog [name/id] [reason]");
+			}
+		}
+	}
+
+	if (!IsPlayerConnected(targetid)) {
+		return SendErrorMsg(playerid, "The player you are trying to reconnect is not connected.");
+	}
+
+	new ip[16];
+	GetPlayerIp(targetid, ip, sizeof(ip));
+
+	isReconnecting[targetid] = true;
+	format(reconnectIP[targetid], sizeof(reconnectIP[]), "%s", ip);
+
+	SendMsgAllF(COLOR_MODERATION, "[ADMIN RECONNECT]: %p(%d) has been reconnected by Admin %p(%d). Reason: %s", targetid, targetid, playerid, playerid, reason);
+	SendMsgF(targetid, COLOR_MODERATION, "[ADMIN RECONNECT]: You are being reconnected by Admin. Reason: %s", reason);
+
+	new cmd[32];
+	format(cmd, sizeof(cmd), "banip %s", ip);
+	SendRconCommand(cmd);
+
+	Kick(targetid);
+
+	defer UnbanPlayerIP(targetid);
 	return 1;
 }

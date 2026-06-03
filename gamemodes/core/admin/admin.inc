@@ -34,6 +34,7 @@ hook OnGameModeInit() {
     Admin_AddCommandToList(1, "/spec - spectate a player");
     Admin_AddCommandToList(1, "/specoff - stop spectating and return");
     Admin_AddCommandToList(1, "/bulletstats - view a player's shot and accuracy stats");
+    Admin_AddCommandToList(1, "/relog - reconnect a player to the server");
 
     // Level 2
     Admin_AddCommandToList(2, "/jail - jail a player (seconds, reason)");
