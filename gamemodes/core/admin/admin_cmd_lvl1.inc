@@ -204,7 +204,7 @@ ACMD:[1]relog(playerid, params[])
 
 	if (isnull(params)) {
 		targetid = playerid;
-		reason = "Self reconnect";
+		format(reason, sizeof(reason), "Self reconnect");
 	} else {
 		if (sscanf(params, "uS[64](No Reason)", targetid, reason)) {
 			if (sscanf(params, "u", targetid)) {
