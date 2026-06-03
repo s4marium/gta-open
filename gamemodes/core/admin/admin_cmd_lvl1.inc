@@ -1,4 +1,5 @@
-
+#include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_timers>
 
 ACMD:[1]get(playerid, params[])
 {
@@ -170,9 +171,6 @@ ACMD:[1]afix(playerid, params[])
 	RepairVehicle(GetPlayerVehicleID(playerid));
 	return 1;
 }
-
-#include <YSI_Coding\y_hooks>
-#include <YSI_Coding\y_timers>
 
 static
 	bool:isReconnecting[MAX_PLAYERS],
